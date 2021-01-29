@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from dataclasses import dataclass
 from random import randint
+import json
 
 description = ""
 
@@ -49,5 +50,6 @@ async def map(ctx):
 async def quick(ctx, name=""):
     return
 
-
-client.run('token')
+with open("token.json", "r") as token:
+    json_file = json.load(token)
+    client.run(json_file["token"])
