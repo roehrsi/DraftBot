@@ -50,4 +50,4 @@ async def quick(ctx, name=""):
     return
 
 
-client.run('ODA0MDI2NTcxODUyNjExNjM0.YBGWGA.Q-8B6bYEBVgiAj6qmJxbFaiEErE')
+client.run('token')
