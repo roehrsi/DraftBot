@@ -1,9 +1,9 @@
 import json
 import regex
-from math import ceil
 
 
-def isin(arg1: list, arg2: str) -> str:
+
+def isin(arg1, arg2: str) -> list:
     if arg2 == "maps" or "heroes":
         with open("draft.json", "r") as res:
             jfile = json.load(res)
@@ -13,9 +13,11 @@ def isin(arg1: list, arg2: str) -> str:
             print(f"entries: {entries}")
             print(f"arg1: {arg1}")
             for arg in arg1:
-                pattern = "({0}){{e<={1}}}".format(arg, ceil(len(arg) / 4))
+                fuzz = len(arg)//4
+                print(f"fuzz: {fuzz}")
+                pattern = "(?b)({0}){{e<={1}}}".format(arg, fuzz)
                 for entry in entries:
                     if regex.search(pattern, entry, regex.IGNORECASE):
                         match.append(entry)
             print(f"match: {match}")
-            return match[0]
+            return match

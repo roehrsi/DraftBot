@@ -1,4 +1,7 @@
+import json
 from random import randint
+
+import discord
 from discord.ext import commands
 from src.data import *
 from src.util import isin
@@ -9,10 +12,13 @@ class DraftCog(commands.Cog, name="DraftCog"):
         self.bot = bot
         self.currentDraft = None
 
+    with open("config.json", "r") as file:
+        jfile = json.load(file)
+        VERBOSE = jfile["verbose"]
+
     @commands.group()
     async def draft(self, ctx):
-        if self.currentDraft is None:
-            self.currentDraft = Draft(None, None)
+        self.currentDraft = Draft()
         if ctx.invoked_subcommand is None:
             s = "Welcome to the draft, {0}!\n".format(ctx.author.mention)
             s += "If you want to draft a map, type ``!draft tournament`` to start the coin flip and draft a map.\n"
@@ -24,23 +30,25 @@ class DraftCog(commands.Cog, name="DraftCog"):
     async def tournament(self, ctx):
         coin = randint(0, 1)
         if coin == 1:
-            self.currentDraft.teamFirst = Team(captain=ctx.author, map_pick="-")
-            self.currentDraft.teamSecond = Team(captain="Opponent")
-            s = "You won the coin toss. Your opponent will start banning a map now by typing ``!ban map."
+            self.currentDraft.team_first = Team(captain=ctx.author)
+            self.currentDraft.team_second = Team(captain="Opponent")
+            s = "You won the coin toss! Your opponent will start banning a map now by typing ``!ban map."
         else:
-            pass  # todo
+            self.currentDraft.team_second = Team(captain=ctx.author)
+            self.currentDraft.team_first = Team(captain="Opponent")
 
     @draft.command()
     async def quick(self, ctx, arg):
+
         if arg is not None:
             match = isin(arg, "maps")
             if match:
-                self.currentDraft.teamSecond = Team(captain=ctx.author, map_bans=["-", "-"], map_pick=match)
-                self.currentDraft.teamFirst = Team(captain="Opponent", map_bans=["-", "-"], map_pick="-")
+                self.currentDraft.team_second = Team(captain=ctx.author, map_bans=["-", "-"], map_pick=match[0])
+                self.currentDraft.team_first = Team(captain="Opponent", map_bans=["-", "-"])
                 self.currentDraft.stage_num = 5
-                s = "{0} picked {1}!".format(self.currentDraft.teamSecond.captain,
-                                             self.currentDraft.teamSecond.map_pick)
-                s += "Please start banning two heroes each by writing ``!ban hero [hero]``. Opponent goes first!"
+                s = "{0} picked {1}!\n".format(self.currentDraft.team_second.captain,
+                                               self.currentDraft.team_second.map_pick)
+                s += "Please start banning two heroes each by writing ``!ban [hero]``. Opponent goes first!"
             else:
                 s = "I couldn't find a map with that name :(\n"
                 s += "Maybe try again with a different map."
@@ -48,64 +56,109 @@ class DraftCog(commands.Cog, name="DraftCog"):
 
     @commands.command()
     async def ban(self, ctx, arg):
-        bans = isin(arg, "maps")
-        if bans is None:
-            bans = isin(arg, "heroes")
-            if bans is None:
-                s = "I could not find a map or hero with that name."
+        if self.currentDraft is None:
+            s = "No draft is currently happening here... But you can change that!\n"
+            s += "Please start a draft first, by typing ``!draft``.\n"
+            return
+        arg2 = "maps" if self.currentDraft.stage_num <= 4 else "heroes"
+        bans = isin(arg, arg2)
+        if not bans:
+            s = f"I could not find a {arg2} with that name. :("
+            await ctx.send(s)
+            return
+        self.currentDraft.lock(bans)
+        if self.VERBOSE:
+            if self.currentDraft.stage_num == 4:
+                s = f"{self.currentDraft.team_second.captain} can now pick a map from the remaining pool."
                 await ctx.send(s)
-                return
-        await self.lock(ctx, picks=bans)
+            if self.currentDraft.stage_num == 5:
+                s = "Continue banning four heroes in turn"
+                await ctx.send(s)
+            if self.currentDraft.stage_num == 9:
+                s = f"{self.currentDraft.team_first.captain} has the first pick!"
+                await ctx.send(s)
+            if self.currentDraft.stage_num == 14:
+                s = f"{self.currentDraft.team_second.captain} bans another hero next!"
+                await ctx.send(s)
+            if self.currentDraft.stage_num == 16:
+                s = f"{self.currentDraft.team_second.captain} continues picking!"
+                await ctx.send(s)
+        if self.currentDraft.stage_num == 21:
+            await self.display(ctx)
 
     @commands.command()
-    async def pick(self, ctx, **args):
-        bans = isin(args, "maps")
-        if bans is None:
-            bans = isin(args, "heroes")
-            if bans is None:
-                s = "I could not find a map or hero with that name."
-                await ctx.send(s)
-                return
-        await self.lock(ctx, picks=bans)
+    async def pick(self, ctx, *args):
+        arg2 = "maps" if self.currentDraft.stage_num <= 4 else "heroes"
+        picks = isin(args, arg2)
+        if not picks:
+            s = f"I could not find a {arg2} with that name."
+            await ctx.send(s)
+            return
+        self.currentDraft.lock(picks)
 
-    async def lock(self, ctx: commands.context, picks=None):
-        draft: Draft = self.currentDraft
-        if draft is None:
-            await self.reset_draft()
-        if picks:
-            # ban maps
-            if draft.stage_num in draft.second_map_bans:
-                draft.teamSecond.map_bans.append(picks[0])
-                draft.stage_num += 1
-            if draft.stage_num in draft.first_map_bans:
-                draft.teamFirst.map_bans.append((picks[0]))
-                draft.stage_num += 1
-            # pick map
-            if draft.stage_num == draft.second_map_pick:
-                draft.teamSecond.map_pick = picks[0]
-                draft.stage_num += 1
-            # ban heroes
-            if draft.stage_num in draft.first_hero_bans:
-                draft.teamFirst.hero_bans.append(picks[0])
-                draft.stage_num += 1
-            if draft.stage_num in draft.second_hero_bans:
-                draft.teamSecond.hero_bans.append(picks[0])
-                draft.stage_num += 1
-            # pick heroes
-            if draft.stage_num in draft.first_hero_picks:
-                for pick in picks[:1]:
-                    draft.teamFirst.hero_picks.append(pick)
-                    draft.stage_num += 1
-            if draft.stage_num in draft.second_hero_picks:
-                for pick in picks[:1]:
-                    draft.teamSecond.hero_picks.append(pick)
-                    draft.stage_num += 1
+    @commands.command()
+    async def display(self, ctx):
+        embed = discord.Embed(title="Finished Draft:", color=0xff8040)
+        embed.add_field(name=self.currentDraft.team_first.captain, value=self.currentDraft.team_first, inline=True)
+        embed.add_field(name=self.currentDraft.team_second.captain, value=self.currentDraft.team_second,
+                        inline=True)
+        await ctx.send(embed=embed)
 
-    async def reset_draft(self):
-        self.currentDraft = Draft()
+    @draft.command()
+    async def help(self, ctx):
+        embed = discord.Embed(title="Hey there!",
+                              description="This is DraftBot. He can help you draft the team of your dream in "
+                                          "Heroes of the Storm! Take a minute to read the command doc below "
+                                          "to get started.",
+                              color=0xff8040)
+        embed.set_author(name="DraftBot", url="https://github.com/roehrsi/DraftBot")
+        embed.add_field(name="!draft",
+                        value="To start a draft, the **!draft** command will begin a fresh draft for you. "
+                              "Use either the **!draft tournament** command if you wannt to start with flipping a coin "
+                              "for the first pick and drafting a map, or **!draft quick** if you want to pick a map "
+                              "directly and move on to the hero draft.",
+                        inline=False)
+        embed.add_field(name="!ban",
+                        value="The **!ban** command is you one stop shop for banning maps and heroes. "
+                              "It takes one argument - the map or hero name - and adds that to the draft.",
+                        inline=False)
+        embed.add_field(name="!pick", value="The **!pick** command works just like **!ban** for map and hero picks."
+                                            "For the double pick phases, the **!pick** command also takes two "
+                                            "arguments.",
+                        inline=False)
+        embed.add_field(name="!display",
+                        value="The **!display** command displays the current state of the draft. "
+                              "After the draft completes, a summary will be shown containing all "
+                              "the picked maps and heroes.",
+                        inline=False)
+        embed.add_field(name="!draft help", value="Use the **!draft help** command to display this information.",
+                        inline=False)
+        embed.add_field(name="!draft verbosity",
+                        value="Use the **!draft verbosity [0/1]** command to adjust how talkative "
+                              "DraftBot should be during the draft.",
+                        inline=False)
+        embed.add_field(name="drafting order",
+                        value="Order adheres to HotS tournament draft standard with **A** as coin toss winner: \n"
+                              "Map Bans: **B A B A**\n"
+                              "Map Pick: **B**\n"
+                              "Hero Bans: **A B A B**\n"
+                              "Hero Picks: **A BB AA**\n"
+                              "Hero Bans: **B A**\n"
+                              "Hero Picks: **BB AA B**",
+                        inline=False)
+        embed.set_footer(text="GL HF!")
+        await ctx.send(embed=embed)
 
-    async def print_draft(self):
-        pass
+    @draft.command()
+    async def verbosity(self, ctx, arg):
+        with open("config.json", "w") as file:
+            jfile = json.load(file)
+            if arg == 0 or 1:
+                jfile["verbose"] = arg
+                await ctx.send(f"Verbosity has been set to {'True' if arg == 1 else 'False'}")
+
+    async def print_draft(self, ctx):
+        await ctx.send(self.currentDraft)
 
 
 def setup(bot):

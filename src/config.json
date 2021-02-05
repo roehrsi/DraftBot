@@ -1,5 +1,6 @@
 {
   "author": "Daniel R\"ohrs",
   "description": "A simple discord bot to simulate drafting for heroes of the storm",
-  "command_prefix": "!"
+  "command_prefix": "!",
+  "verbose": 1
 }
