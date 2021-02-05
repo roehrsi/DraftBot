@@ -41,13 +41,13 @@ class DraftCog(commands.Cog, name="DraftCog"):
     async def quick(self, ctx, arg):
 
         if arg is not None:
-            match = isin(arg, "maps")
+            match = isin("maps", arg)
             if match:
                 self.currentDraft.team_second = Team(captain=ctx.author, map_bans=["-", "-"], map_pick=match[0])
                 self.currentDraft.team_first = Team(captain="Opponent", map_bans=["-", "-"])
                 self.currentDraft.stage_num = 5
-                s = "{0} picked {1}!\n".format(self.currentDraft.team_second.captain,
-                                               self.currentDraft.team_second.map_pick)
+                s = "{0} picked **{1}**!\n".format(self.currentDraft.team_second.captain,
+                                                   self.currentDraft.team_second.map_pick)
                 s += "Please start banning two heroes each by writing ``!ban [hero]``. Opponent goes first!"
             else:
                 s = "I couldn't find a map with that name :(\n"
@@ -60,10 +60,10 @@ class DraftCog(commands.Cog, name="DraftCog"):
             s = "No draft is currently happening here... But you can change that!\n"
             s += "Please start a draft first, by typing ``!draft``.\n"
             return
-        arg2 = "maps" if self.currentDraft.stage_num <= 4 else "heroes"
-        bans = isin(arg, arg2)
+        kind = "maps" if self.currentDraft.stage_num <= 4 else "heroes"
+        bans = isin(kind, arg)
         if not bans:
-            s = f"I could not find a {arg2} with that name. :("
+            s = f"I could not find a {kind} with that name. :("
             await ctx.send(s)
             return
         self.currentDraft.lock(bans)
@@ -85,19 +85,49 @@ class DraftCog(commands.Cog, name="DraftCog"):
                 await ctx.send(s)
         if self.currentDraft.stage_num == 21:
             await self.display(ctx)
+            self.currentDraft = None
 
     @commands.command()
-    async def pick(self, ctx, *args):
-        arg2 = "maps" if self.currentDraft.stage_num <= 4 else "heroes"
-        picks = isin(args, arg2)
+    async def pick(self, ctx, arg1, arg2=None):
+        if self.currentDraft is None:
+            s = "No draft is currently happening here... But you can change that!\n"
+            s += "Please start a draft first, by typing ``!draft``.\n"
+            await ctx.send(s)
+            return
+        kind = "maps" if self.currentDraft.stage_num <= 4 else "heroes"
+        picks = isin(kind, arg1, arg2)
         if not picks:
-            s = f"I could not find a {arg2} with that name."
+            s = f"I could not find a {kind} with that name. :("
             await ctx.send(s)
             return
         self.currentDraft.lock(picks)
+        if self.VERBOSE:
+            if self.currentDraft.stage_num == 4:
+                s = f"{self.currentDraft.team_second.captain} can now pick a map from the remaining pool."
+                await ctx.send(s)
+            if self.currentDraft.stage_num == 5:
+                s = "Continue banning four heroes in turn"
+                await ctx.send(s)
+            if self.currentDraft.stage_num == 9:
+                s = f"{self.currentDraft.team_first.captain} has the first pick!"
+                await ctx.send(s)
+            if self.currentDraft.stage_num == 14:
+                s = f"{self.currentDraft.team_second.captain} bans another hero next!"
+                await ctx.send(s)
+            if self.currentDraft.stage_num == 16:
+                s = f"{self.currentDraft.team_second.captain} continues picking!"
+                await ctx.send(s)
+        if self.currentDraft.stage_num == 21:
+            await self.display(ctx)
+            self.currentDraft = None
 
     @commands.command()
     async def display(self, ctx):
+        if self.currentDraft is None:
+            s = "No draft is currently happening here... But you can change that!\n"
+            s += "Please start a draft first, by typing ``!draft``.\n"
+            await ctx.send(s)
+            return
         embed = discord.Embed(title="Finished Draft:", color=0xff8040)
         embed.add_field(name=self.currentDraft.team_first.captain, value=self.currentDraft.team_first, inline=True)
         embed.add_field(name=self.currentDraft.team_second.captain, value=self.currentDraft.team_second,

@@ -32,33 +32,41 @@ class Draft:
     SECOND_HERO_PICKS = [10, 11, 16, 17, 20]
 
     def lock(self, picks):
+        print(f"stage: {self.stage_num}")
         # ban maps
         if self.stage_num in self.SECOND_MAP_BANS:
             self.team_second.map_bans.append(picks[0])
             self.stage_num += 1
-        if self.stage_num in self.FIRST_MAP_BANS:
+            return
+        elif self.stage_num in self.FIRST_MAP_BANS:
             self.team_first.map_bans.append((picks[0]))
             self.stage_num += 1
+            return
         # pick map
-        if self.stage_num == self.SECOND_MAP_PICK:
+        elif self.stage_num == self.SECOND_MAP_PICK:
             self.team_second.map_pick = picks[0]
             self.stage_num += 1
+            return
         # ban heroes
-        if self.stage_num in self.FIRST_HERO_BANS:
+        elif self.stage_num in self.FIRST_HERO_BANS:
             self.team_first.hero_bans.append(picks[0])
             self.stage_num += 1
-        if self.stage_num in self.SECOND_HERO_BANS:
+            return
+        elif self.stage_num in self.SECOND_HERO_BANS:
             self.team_second.hero_bans.append(picks[0])
             self.stage_num += 1
+            return
         # pick heroes
-        if self.stage_num in self.FIRST_HERO_PICKS:
-            for pick in picks[:1]:
+        elif self.stage_num in self.FIRST_HERO_PICKS:
+            for pick in picks:
                 self.team_first.hero_picks.append(pick)
                 self.stage_num += 1
-        if self.stage_num in self.SECOND_HERO_PICKS:
-            for pick in picks[:1]:
+            return
+        elif self.stage_num in self.SECOND_HERO_PICKS:
+            for pick in picks:
                 self.team_second.hero_picks.append(pick)
                 self.stage_num += 1
+            return
 
     def __repr__(self):
         s = "Team A: \n"
