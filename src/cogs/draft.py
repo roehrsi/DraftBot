@@ -12,6 +12,14 @@ class DraftCog(commands.Cog, name="DraftCog"):
         self.bot = bot
         self.currentDraft = None
 
+    class Warn:
+        NO_DRAFT = "No draft is currently happening here... But you can change that!\n" \
+                   "Please start a draft first, by typing ``!draft``.\n"
+        NO_MAP = "I couldn't find a map with that name. :(\n" \
+                 "Maybe try again with a different map."
+        NO_HERO = "I couldn't find a hero with that name. :(\n" \
+                  "Maybe try again with a different name."
+
     with open("config.json", "r") as file:
         jfile = json.load(file)
         VERBOSE = jfile["verbose"]
@@ -39,7 +47,6 @@ class DraftCog(commands.Cog, name="DraftCog"):
 
     @draft.command()
     async def quick(self, ctx, arg):
-
         if arg is not None:
             match = isin("maps", arg)
             if match:
@@ -50,15 +57,13 @@ class DraftCog(commands.Cog, name="DraftCog"):
                                                    self.currentDraft.team_second.map_pick)
                 s += "Please start banning two heroes each by writing ``!ban [hero]``. Opponent goes first!"
             else:
-                s = "I couldn't find a map with that name :(\n"
-                s += "Maybe try again with a different map."
+                s = self.Warn.NO_MAP
             await ctx.send(s)
 
     @commands.command()
     async def ban(self, ctx, arg):
         if self.currentDraft is None:
-            s = "No draft is currently happening here... But you can change that!\n"
-            s += "Please start a draft first, by typing ``!draft``.\n"
+            s = self.Warn.NO_DRAFT
             return
         kind = "maps" if self.currentDraft.stage_num <= 4 else "heroes"
         bans = isin(kind, arg)
@@ -119,20 +124,15 @@ class DraftCog(commands.Cog, name="DraftCog"):
                 await ctx.send(s)
         if self.currentDraft.stage_num == 21:
             await self.display(ctx)
-            self.currentDraft = None
+            # self.currentDraft = None
 
     @commands.command()
     async def display(self, ctx):
         if self.currentDraft is None:
-            s = "No draft is currently happening here... But you can change that!\n"
-            s += "Please start a draft first, by typing ``!draft``.\n"
+            s = self.Warn.NO_DRAFT
             await ctx.send(s)
             return
-        embed = discord.Embed(title="Finished Draft:", color=0xff8040)
-        embed.add_field(name=self.currentDraft.team_first.captain, value=self.currentDraft.team_first, inline=True)
-        embed.add_field(name=self.currentDraft.team_second.captain, value=self.currentDraft.team_second,
-                        inline=True)
-        await ctx.send(embed=embed)
+        await self.print_draft(ctx)
 
     @draft.command()
     async def help(self, ctx):
@@ -188,7 +188,33 @@ class DraftCog(commands.Cog, name="DraftCog"):
                 await ctx.send(f"Verbosity has been set to {'True' if arg == 1 else 'False'}")
 
     async def print_draft(self, ctx):
-        await ctx.send(self.currentDraft)
+        if self.currentDraft is None:
+            s = self.Warn.NO_DRAFT
+            await ctx.send(s)
+            return
+        embed = discord.Embed(title="Finished Draft:", color=0xff8040)
+
+        first_content = ("Map Bans: \n"
+                         "```" + ", ".join(self.currentDraft.team_first.map_bans) + "```" +
+                         "**Map Pick**: \n"
+                         "```" + self.currentDraft.team_first.map_pick + "```" +
+                         "**Hero Bans**: \n"
+                         "```" + "\n".join(self.currentDraft.team_first.hero_bans) + "```" +
+                         "**Hero Picks**: \n" +
+                         "```" + "\n".join(self.currentDraft.team_first.hero_picks) + "```")
+
+        second_content = ("Map Bans: \n"
+                          "```" + ", ".join(self.currentDraft.team_second.map_bans) + "```" +
+                          "**Map Pick**: \n"
+                          "```" + self.currentDraft.team_second.map_pick + "```" +
+                          "**Hero Bans**: \n"
+                          "```" + "\n".join(self.currentDraft.team_second.hero_bans) + "```" +
+                          "**Hero Picks**: \n" +
+                          "```" + "\n".join(self.currentDraft.team_second.hero_picks) + "```")
+
+        embed.add_field(name=self.currentDraft.team_first.captain, value=first_content, inline=True)
+        embed.add_field(name=self.currentDraft.team_second.captain, value=second_content, inline=True)
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
