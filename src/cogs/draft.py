@@ -43,7 +43,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
             s = f"{self.currentDraft.team_first.captain} won the coin toss! Your opponent can start banning a map now."
         else:
             self.currentDraft.team_first = Team(captain="Opponent")
-            self.currentDraft.team_second = Team(captain=ctx.author.nick)
+            self.currentDraft.team_second = Team(captain=ctx.author.name)
             s = f"Opponent won the coin toss! {self.currentDraft.team_second.captain} starts banning a map."
 
         await ctx.send(s)
@@ -53,7 +53,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
         if arg is not None:
             match = isin("maps", arg)
             if match:
-                self.currentDraft.team_second = Team(captain=ctx.author.nick, map_bans=["-", "-"], map_pick=match[0])
+                self.currentDraft.team_second = Team(captain=ctx.author.name, map_bans=["-", "-"], map_pick=match[0])
                 self.currentDraft.team_first = Team(captain="Opponent", map_bans=["-", "-"])
                 self.currentDraft.stage_num = 5
                 s = "{0} picked **{1}**!\n".format(self.currentDraft.team_second.captain,
