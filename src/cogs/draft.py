@@ -80,7 +80,9 @@ class DraftCog(commands.Cog, name="DraftCog"):
                 s = f"{self.currentDraft.team_second.captain} can now pick a map from the remaining pool."
                 await ctx.send(s)
             if self.currentDraft.stage_num == 5:
-                s = "Continue banning four heroes in turn"
+                s = "{0} picked **{1}**!\n".format(self.currentDraft.team_second.captain,
+                                                   self.currentDraft.team_second.map_pick)
+                s += "Please start banning two heroes each by writing ``!ban [hero]``. Opponent goes first!"
                 await ctx.send(s)
             if self.currentDraft.stage_num == 9:
                 s = f"{self.currentDraft.team_first.captain} has the first pick!"
