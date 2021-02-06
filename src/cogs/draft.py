@@ -168,10 +168,10 @@ class DraftCog(commands.Cog, name="DraftCog"):
                         inline=False)
         embed.add_field(name="!draft help", value="Use the **!draft help** command to display this information.",
                         inline=False)
-        embed.add_field(name="!draft verbosity",
+        """embed.add_field(name="!draft verbosity",
                         value="Use the **!draft verbosity [0/1]** command to adjust how talkative "
                               "DraftBot should be during the draft.",
-                        inline=False)
+                        inline=False)"""
         embed.add_field(name="drafting order",
                         value="Order adheres to HotS tournament draft standard with **A** as coin toss winner: \n"
                               "Map Bans: **B A B A**\n"
@@ -184,6 +184,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
         embed.set_footer(text="GL HF!")
         await ctx.send(embed=embed)
 
+    """
     @draft.command()
     async def verbosity(self, ctx, arg):
         with open("config.json", "w") as file:
@@ -191,6 +192,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
             if arg == 0 or 1:
                 jfile["verbose"] = arg
                 await ctx.send(f"Verbosity has been set to {'True' if arg == 1 else 'False'}")
+    """
 
     async def print_draft(self, ctx):
         if self.currentDraft is None:
