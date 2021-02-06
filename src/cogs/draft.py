@@ -38,19 +38,22 @@ class DraftCog(commands.Cog, name="DraftCog"):
     async def tournament(self, ctx):
         coin = randint(0, 1)
         if coin == 1:
-            self.currentDraft.team_first = Team(captain=ctx.author)
+            self.currentDraft.team_first = Team(captain=ctx.author.name)
             self.currentDraft.team_second = Team(captain="Opponent")
-            s = "You won the coin toss! Your opponent will start banning a map now by typing ``!ban map."
+            s = f"{self.currentDraft.team_first.captain} won the coin toss! Your opponent can start banning a map now."
         else:
-            self.currentDraft.team_second = Team(captain=ctx.author)
             self.currentDraft.team_first = Team(captain="Opponent")
+            self.currentDraft.team_second = Team(captain=ctx.author.nick)
+            s = f"Opponent won the coin toss! {self.currentDraft.team_second.captain} starts banning a map."
+
+        await ctx.send(s)
 
     @draft.command()
     async def quick(self, ctx, arg):
         if arg is not None:
             match = isin("maps", arg)
             if match:
-                self.currentDraft.team_second = Team(captain=ctx.author, map_bans=["-", "-"], map_pick=match[0])
+                self.currentDraft.team_second = Team(captain=ctx.author.nick, map_bans=["-", "-"], map_pick=match[0])
                 self.currentDraft.team_first = Team(captain="Opponent", map_bans=["-", "-"])
                 self.currentDraft.stage_num = 5
                 s = "{0} picked **{1}**!\n".format(self.currentDraft.team_second.captain,
