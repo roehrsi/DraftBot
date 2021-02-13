@@ -1,3 +1,12 @@
+SECOND_MAP_BANS = [0, 2]
+FIRST_MAP_BANS = [1, 3]
+SECOND_MAP_PICK = 4
+FIRST_HERO_BANS = [5, 7, 15]
+SECOND_HERO_BANS = [6, 8, 14]
+FIRST_HERO_PICKS = [9, 12, 13, 18, 19]
+SECOND_HERO_PICKS = [10, 11, 16, 17, 20]
+
+
 class Team:
     def __init__(self, captain="", map_bans=None, map_pick="-", hero_bans=None, hero_picks=None):
         self.captain = captain
@@ -12,6 +21,17 @@ class Team:
         if hero_picks is None:
             self.hero_picks = []
 
+    def __repr__(self):
+        s = ("Map Bans: \n"
+             "``` " + ", ".join(self.map_bans) + "```" +
+             "**Map Pick**: \n"
+             "``` " + self.map_pick + "```" +
+             "**Hero Bans**: \n"
+             "``` " + "\n ".join(self.hero_bans) + "```" +
+             "**Hero Picks**: \n" +
+             "``` " + "\n ".join(self.hero_picks) + "```")
+        return s
+
 
 class Draft:
     def __init__(self, team_first=None, team_second=None, stage_num=0):
@@ -23,58 +43,39 @@ class Draft:
         if team_second is None:
             self.team_second = Team("", [], "", [], [])
 
-    SECOND_MAP_BANS = [0, 2]
-    FIRST_MAP_BANS = [1, 3]
-    SECOND_MAP_PICK = 4
-    FIRST_HERO_BANS = [5, 7, 15]
-    SECOND_HERO_BANS = [6, 8, 14]
-    FIRST_HERO_PICKS = [9, 12, 13, 18, 19]
-    SECOND_HERO_PICKS = [10, 11, 16, 17, 20]
-
     def lock(self, picks):
         print(f"stage: {self.stage_num}")
         # ban maps
-        if self.stage_num in self.SECOND_MAP_BANS:
+        if self.stage_num in SECOND_MAP_BANS:
             self.team_second.map_bans.append(picks[0])
             self.stage_num += 1
             return
-        elif self.stage_num in self.FIRST_MAP_BANS:
+        elif self.stage_num in FIRST_MAP_BANS:
             self.team_first.map_bans.append((picks[0]))
             self.stage_num += 1
             return
         # pick map
-        elif self.stage_num == self.SECOND_MAP_PICK:
+        elif self.stage_num == SECOND_MAP_PICK:
             self.team_second.map_pick = picks[0]
             self.stage_num += 1
             return
         # ban heroes
-        elif self.stage_num in self.FIRST_HERO_BANS:
+        elif self.stage_num in FIRST_HERO_BANS:
             self.team_first.hero_bans.append(picks[0])
             self.stage_num += 1
             return
-        elif self.stage_num in self.SECOND_HERO_BANS:
+        elif self.stage_num in SECOND_HERO_BANS:
             self.team_second.hero_bans.append(picks[0])
             self.stage_num += 1
             return
         # pick heroes
-        elif self.stage_num in self.FIRST_HERO_PICKS:
+        elif self.stage_num in FIRST_HERO_PICKS:
             for pick in picks:
                 self.team_first.hero_picks.append(pick)
                 self.stage_num += 1
             return
-        elif self.stage_num in self.SECOND_HERO_PICKS:
+        elif self.stage_num in SECOND_HERO_PICKS:
             for pick in picks:
                 self.team_second.hero_picks.append(pick)
                 self.stage_num += 1
             return
-
-    def __repr__(self):
-        s = "Team A: \n"
-        s += ", ".join(self.team_first.map_bans) + "\n"
-        s += self.team_first.map_pick + "\n"
-        s += ", ".join(self.team_first.hero_bans) + "\n" + "\n".join(self.team_first.hero_picks)
-        s += "\nTeam B: \n"
-        s += ", ".join(self.team_second.map_bans) + "\n"
-        s += self.team_second.map_pick + "\n"
-        s += ", ".join(self.team_second.hero_bans) + "\n" + "\n".join(self.team_second.hero_picks)
-        return s

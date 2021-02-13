@@ -6,6 +6,8 @@ import logging
 
 from discord.ext import commands
 
+token = os.environ.get("DTOKEN", "NO TOKEN")
+
 logging.basicConfig(level=logging.INFO)
 description = "This is a simple Bot to simulate drafting."
 intents = discord.Intents.default()
@@ -18,7 +20,6 @@ for file in os.listdir("cogs"):
     if file.endswith(".py"):
         name = file[:-3]
         bot.load_extension(f"cogs.{name}")
+        print(f"cogs.{name}", "loaded")
 
-with open("token.json", "r") as token:
-    jfile = json.load(token)
-    bot.run(jfile["token"])
+bot.run(token)
