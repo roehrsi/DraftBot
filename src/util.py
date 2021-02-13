@@ -18,19 +18,20 @@ def isin(kind: str, arg1, arg2=None) -> list:
             result = []
             match = []
             for arg in args:
-                print(f"arg: {arg}")
                 fuzz = len(arg) // 4
                 pattern = r"({0}){{e<={1}}}".format(arg, fuzz)
                 # pattern = r"{0}".format(arg)
                 for entry in entries:
-                    if regex.search(pattern, entry, regex.BESTMATCH | regex.IGNORECASE):
+                    if regex.match(pattern, entry, regex.BESTMATCH | regex.IGNORECASE):
                         match.append(entry)
-                if len(match) > len(args):
+                        print(f"match: {entry}")
+                print(len(match))
+                if len(match) > 1:
                     for m in match:
-                        if regex.match(pattern, m, regex.BESTMATCH | regex.IGNORECASE):
-                            result.append(arg)
+                        if regex.match(arg, m, regex.BESTMATCH | regex.IGNORECASE):
+                            result.append(m)
                 else:
                     result = match
 
-            print(f"match: {result}")
-            return result
+        print(f"final match: {result}")
+        return result
