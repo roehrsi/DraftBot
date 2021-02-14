@@ -22,13 +22,13 @@ def isin(kind: str, arg1, arg2=None) -> list:
                 pattern = r"({0}){{e<={1}}}".format(arg, fuzz)
                 # pattern = r"{0}".format(arg)
                 for entry in entries:
-                    if regex.match(pattern, entry, regex.BESTMATCH | regex.IGNORECASE):
+                    if regex.search(pattern, entry, regex.BESTMATCH | regex.IGNORECASE):
                         match.append(entry)
                         print(f"match: {entry}")
                 print(len(match))
                 if len(match) > 1:
                     for m in match:
-                        if regex.match(arg, m, regex.BESTMATCH | regex.IGNORECASE):
+                        if regex.search(arg, m, regex.BESTMATCH | regex.IGNORECASE):
                             result.append(m)
                 else:
                     result = match

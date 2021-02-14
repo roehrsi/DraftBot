@@ -1,6 +1,6 @@
 SECOND_MAP_BANS = [0, 2]
 FIRST_MAP_BANS = [1, 3]
-SECOND_MAP_PICK = 4
+SECOND_MAP_PICK = [4]
 FIRST_HERO_BANS = [5, 7, 15]
 SECOND_HERO_BANS = [6, 8, 14]
 FIRST_HERO_PICKS = [9, 12, 13, 18, 19]
@@ -42,6 +42,14 @@ class Draft:
             self.team_first = Team("", [], "", [], [])
         if team_second is None:
             self.team_second = Team("", [], "", [], [])
+
+    def turn(self) -> int:
+        """This will return the Team that is currently expected to ban or pick.
+        Returns 1 for the first pick team and 0 for the map pick team"""
+        if self.stage_num in (FIRST_HERO_PICKS + FIRST_HERO_BANS + FIRST_MAP_BANS):
+            return 1
+        else:
+            return 0
 
     def lock(self, picks):
         print(f"stage: {self.stage_num}")
