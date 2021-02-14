@@ -8,14 +8,14 @@ from src.util import isin
 
 NO_DRAFT = "No draft is currently happening here... But you can change that!\n" \
            "Please start a draft first, by typing ``!draft``.\n"
-NO_MAP = "I couldn't find a map with that name. :(\n" \
-         "Maybe try again with a different map."
-NO_HERO = "I couldn't find a hero with that name. :(\n" \
-          "Maybe try again with a different name."
+NO_MATCH = "I couldn't find a {0} with that name. :(\n" \
+           "Maybe try again with a more precise name."
 GREETING = "Welcome to the draft, {0} \n " \
            "If you want to draft a map, type ``!draft tournament`` to start the coin flip and draft a map.\n " \
            "Otherwise use ``!draft quick [map]`` to skip map draft and pick a map directly, then do the coin flip.\n " \
            "If you want to restart the draft, simply call this base command again to reset all parameters."
+REDUNDANT_PICK = "This {0} is already picked. Try something different."
+ILLEGAL_PICK = "You cannot pick a banned {0}."
 
 
 class DraftCog(commands.Cog, name="DraftCog"):
@@ -71,7 +71,8 @@ class DraftCog(commands.Cog, name="DraftCog"):
     @draft.command()
     async def quick(self, ctx, arg):
         self.currentDraft = Draft()
-        match = isin("maps", arg)
+        kind = "map"
+        match = isin(kind, arg)
         if match:
             self.currentDraft.team_second = Team(captain=ctx.author.name, map_bans=["-", "-"], map_pick=match[0])
             self.currentDraft.team_first = Team(captain="Opponent", map_bans=["-", "-"])
@@ -81,42 +82,52 @@ class DraftCog(commands.Cog, name="DraftCog"):
                 f"{self.currentDraft.team_second.captain} picked **{self.currentDraft.team_second.map_pick}**!\n "
                 f"Please start banning two heroes each by writing ``!ban [hero]``. Opponent goes first!")
         else:
-            await ctx.send(NO_MAP)
+            await ctx.send(NO_MATCH.format(kind))
 
     @commands.command()
     async def ban(self, ctx, arg):
         if self.currentDraft is None:
             await ctx.send(NO_DRAFT)
         else:
-            kind = "maps" if self.currentDraft.stage_num <= 4 else "heroes"
+            kind = "map" if self.currentDraft.stage_num <= 4 else "hero"
             bans = isin(kind, arg)
             if not bans:
-                if kind == "hero":
-                    await ctx.send(NO_HERO)
-                elif kind == "maps":
-                    await ctx.send(NO_MAP)
+                await ctx.send(NO_MATCH.format(kind))
             # lock in the ban
             else:
-                self.currentDraft.lock(bans)
-                await self.status_verbose(ctx)
+                # check bans for duplicates
+                if any(ban in (self.currentDraft.team_first.map_bans
+                               + self.currentDraft.team_second.map_bans
+                               + self.currentDraft.team_first.hero_bans
+                               + self.currentDraft.team_second.hero_bans) for ban in bans):
+                    await ctx.send(REDUNDANT_PICK.format(kind))
+                else:
+                    self.currentDraft.lock(bans)
+                    await self.status_verbose(ctx)
 
     @commands.command()
     async def pick(self, ctx, arg1, arg2=None):
         if self.currentDraft is None:
-            await ctx.send(
-                "No draft is currently happening here... But you can change that!\n "
-                "Please start a draft first, by typing ``!draft``.\n")
+            await ctx.send(NO_DRAFT)
         else:
-            kind = "maps" if self.currentDraft.stage_num <= 4 else "heroes"
+            kind = "map" if self.currentDraft.stage_num <= 4 else "hero"
             picks = isin(kind, arg1, arg2)
             if not picks:
-                if kind == "hero":
-                    await ctx.send(NO_HERO)
-                elif kind == "maps":
-                    await ctx.send(NO_MAP)
+                await ctx.send(NO_MATCH.format(kind))
+            # lock in pick
             else:
-                self.currentDraft.lock(picks)
-                await self.status_verbose(ctx)
+                # check for banned picks
+                if any(pick in (self.currentDraft.team_first.map_bans
+                                + self.currentDraft.team_second.map_bans
+                                + self.currentDraft.team_first.hero_bans
+                                + self.currentDraft.team_second.hero_bans) for pick in picks):
+                    await ctx.send(ILLEGAL_PICK.format(kind))
+                elif picks in (self.currentDraft.team_first.hero_picks
+                               + self.currentDraft.team_second.hero_picks):
+                    await ctx.send(REDUNDANT_PICK.format(kind))
+                else:
+                    self.currentDraft.lock(picks)
+                    await self.status_verbose(ctx)
 
     @draft.command()
     async def display(self, ctx):

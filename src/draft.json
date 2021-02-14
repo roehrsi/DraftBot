@@ -1,5 +1,5 @@
 {
-  "maps": [
+  "map": [
     "Alterac Pass",
     "Battlefield Of Eternity",
     "Blackheart's Bay",
@@ -16,7 +16,7 @@
     "Volskaya Foundry",
     "Warhead Junction"
   ],
-  "heroes": [
+  "hero": [
     "Alarak",
     "Cassia",
     "Chromie",
