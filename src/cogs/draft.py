@@ -34,7 +34,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
         if self.VERBOSE:
             if self.currentDraft.stage_num == 4:
                 await ctx.send(
-                    f"{self.currentDraft.team_second.captain} can now ```!pick``` a map from the remaining pool.",
+                    f"{self.currentDraft.team_second.captain} can now ``!pick`` a map from the remaining pool.",
                     delete_after=DELAY)
             if self.currentDraft.stage_num == 5:
                 await ctx.send(
@@ -79,11 +79,11 @@ class DraftCog(commands.Cog, name="DraftCog"):
         if coin == 1:
             self.currentDraft.team_first = Team(captain=ctx.author.name)
             self.currentDraft.team_second = Team(captain=member.name)
-            s = f"{self.currentDraft.team_first.captain} won the coin toss! {self.currentDraft.team_second.captain} can start ```!ban```ning a map now."
+            s = f"{self.currentDraft.team_first.captain} won the coin toss! {self.currentDraft.team_second.captain} can start ``!ban``ning a map now."
         else:
             self.currentDraft.team_first = Team(captain=member.name)
             self.currentDraft.team_second = Team(captain=ctx.author.name)
-            s = f"{self.currentDraft.team_first.captain} won the coin toss! {self.currentDraft.team_second.captain} starts ```!ban```ning a map."
+            s = f"{self.currentDraft.team_first.captain} won the coin toss! {self.currentDraft.team_second.captain} starts ``!ban``ning a map."
         self.embed = await ctx.send(embed=self.print_embed())
         await ctx.send(s, delete_after=DELAY)
 
