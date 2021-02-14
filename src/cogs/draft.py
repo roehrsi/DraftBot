@@ -33,8 +33,9 @@ class DraftCog(commands.Cog, name="DraftCog"):
     async def status_verbose(self, ctx):
         if self.VERBOSE:
             if self.currentDraft.stage_num == 4:
-                await ctx.send(f"{self.currentDraft.team_second.captain} can now pick a map from the remaining pool.",
-                               delete_after=DELAY)
+                await ctx.send(
+                    f"{self.currentDraft.team_second.captain} can now ```!pick``` a map from the remaining pool.",
+                    delete_after=DELAY)
             if self.currentDraft.stage_num == 5:
                 await ctx.send(
                     f"{self.currentDraft.team_second.captain} picked **{self.currentDraft.team_second.map_pick}**!\n"
@@ -78,11 +79,11 @@ class DraftCog(commands.Cog, name="DraftCog"):
         if coin == 1:
             self.currentDraft.team_first = Team(captain=ctx.author.name)
             self.currentDraft.team_second = Team(captain=member.name)
-            s = f"{self.currentDraft.team_first.captain} won the coin toss! {self.currentDraft.team_second.captain} can start banning a map now."
+            s = f"{self.currentDraft.team_first.captain} won the coin toss! {self.currentDraft.team_second.captain} can start ```!ban```ning a map now."
         else:
             self.currentDraft.team_first = Team(captain=member.name)
             self.currentDraft.team_second = Team(captain=ctx.author.name)
-            s = f"{self.currentDraft.team_first.captain} won the coin toss! {self.currentDraft.team_second.captain} starts banning a map."
+            s = f"{self.currentDraft.team_first.captain} won the coin toss! {self.currentDraft.team_second.captain} starts ```!ban```ning a map."
         self.embed = await ctx.send(embed=self.print_embed())
         await ctx.send(s, delete_after=DELAY)
 
@@ -167,30 +168,35 @@ class DraftCog(commands.Cog, name="DraftCog"):
     @draft.command()
     async def help(self, ctx):
         embed = discord.Embed(title="Hey there!",
-                              description="This is DraftBot. He can help you draft the team of your dream in "
+                              description="*honk honk* This is DraftBot. He can help you draft the team of your dream in "
                                           "Heroes of the Storm! Take a minute to read the command doc below "
                                           "to get started.",
                               color=0xff8040)
         embed.set_author(name="DraftBot", url="https://github.com/roehrsi/DraftBot")
         embed.add_field(name="!draft",
                         value="To start a draft, the **!draft** command will begin a fresh draft for you. "
-                              "Use either the **!draft tournament** command if you want to start with flipping a coin "
-                              "for the first pick and drafting a map, or **!draft quick** if you want to pick a map "
-                              "directly and move on to the hero draft.",
+                              "Use either the **!draft tournament [@Opponent]** command if you want to start with "
+                              "flipping a coin for the first pick and drafting a map, or **!draft quick [@Opponent]** "
+                              "if you want to pick a map directly and move on to the hero draft. "
+                              "Only you and your tagged opponent can influence the draft, "
+                              "so you are safe from griefers and run-downers ;)."
+                              "Nobody can stop you from tagging yourself though...",
                         inline=False)
         embed.add_field(name="!ban",
-                        value="The **!ban** command is you one stop shop for banning maps and heroes. "
-                              "It takes one argument - the map or hero name - and adds that to the draft.",
+                        value="The **!ban** command is your one stop shop for banning maps and heroes. "
+                              "It takes one argument - the map or hero name - and adds that to the draft."
+                              "DraftBot can handle some spelling error and shorthands, "
+                              "but try not to be too obscure with your inputs",
                         inline=False)
         embed.add_field(name="!pick", value="The **!pick** command works just like **!ban** for map and hero picks."
                                             "For the double pick phases, the **!pick** command also takes two "
                                             "arguments.",
                         inline=False)
-        embed.add_field(name="!display",
+        """embed.add_field(name="!display",
                         value="The **!display** command displays the current state of the draft. "
                               "After the draft completes, a summary will be shown containing all "
                               "the picked maps and heroes.",
-                        inline=False)
+                        inline=False)"""
         embed.add_field(name="!draft help", value="Use the **!draft help** command to display this information.",
                         inline=False)
         """embed.add_field(name="!draft verbosity",
