@@ -179,7 +179,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
                               "flipping a coin for the first pick and drafting a map, or **!draft quick [@Opponent]** "
                               "if you want to pick a map directly and move on to the hero draft. "
                               "Only you and your tagged opponent can influence the draft, "
-                              "so you are safe from griefers and run-downers ;)."
+                              "so you are safe from griefers and run-downers ;). "
                               "Nobody can stop you from tagging yourself though...",
                         inline=False)
         embed.add_field(name="!ban",
