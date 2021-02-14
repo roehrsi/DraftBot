@@ -176,7 +176,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
         embed.add_field(name="!draft",
                         value="To start a draft, the **!draft** command will begin a fresh draft for you. "
                               "Use either the **!draft tournament [@Opponent]** command if you want to start with "
-                              "flipping a coin for the first pick and drafting a map, or **!draft quick [@Opponent]** "
+                              "flipping a coin for the first pick and drafting a map, or **!draft quick [map] [@Opponent]** "
                               "if you want to pick a map directly and move on to the hero draft. "
                               "Only you and your tagged opponent can influence the draft, "
                               "so you are safe from griefers and run-downers ;). "
