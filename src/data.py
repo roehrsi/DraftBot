@@ -5,6 +5,8 @@ FIRST_HERO_BANS = [5, 7, 15]
 SECOND_HERO_BANS = [6, 8, 14]
 FIRST_HERO_PICKS = [9, 12, 13, 18, 19]
 SECOND_HERO_PICKS = [10, 11, 16, 17, 20]
+FIRST_PICK = [9]
+LAST_PICK = [20]
 
 
 class Team:
@@ -52,6 +54,7 @@ class Draft:
             return 0
 
     def lock(self, picks):
+        """lock in the pick or ban into the current draft"""
         print(f"stage: {self.stage_num}")
         # ban maps
         if self.stage_num in SECOND_MAP_BANS:
@@ -63,7 +66,7 @@ class Draft:
             self.stage_num += 1
             return
         # pick map
-        elif self.stage_num == SECOND_MAP_PICK:
+        elif self.stage_num in SECOND_MAP_PICK:
             self.team_second.map_pick = picks[0]
             self.stage_num += 1
             return
@@ -78,12 +81,18 @@ class Draft:
             return
         # pick heroes
         elif self.stage_num in FIRST_HERO_PICKS:
-            for pick in picks:
-                self.team_first.hero_picks.append(pick)
+            if self.stage_num in FIRST_PICK:
+                self.team_first.hero_picks.append(picks[0])
                 self.stage_num += 1
+            else:
+                self.team_first.hero_picks.extend(picks)
+                self.stage_num += len(picks)
             return
         elif self.stage_num in SECOND_HERO_PICKS:
-            for pick in picks:
-                self.team_second.hero_picks.append(pick)
+            if self.stage_num in LAST_PICK:
+                self.team_second.hero_picks.append(picks[0])
                 self.stage_num += 1
+            else:
+                self.team_second.hero_picks.extend(picks)
+                self.stage_num += len(picks)
             return
