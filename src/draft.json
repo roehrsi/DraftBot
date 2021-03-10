@@ -1,110 +1,651 @@
 {
   "map": [
-    "Alterac Pass",
-    "Battlefield Of Eternity",
-    "Blackheart's Bay",
-    "Braxis Holdout",
-    "Cursed Hollow",
-    "Dragon Shire",
-    "Garden of Terror",
-    "Hanamura",
-    "Haunted Mines",
-    "Infernal Shrines",
-    "Sky Temple",
-    "Tomb of the Spider Queen",
-    "Towers of Doom",
-    "Volskaya Foundry",
-    "Warhead Junction"
+    {
+      "name": "Alterac Pass",
+      "alias": [
+        "Alterac Pass"
+      ]
+    },
+    {
+      "name": "Battlefield Of Eternity",
+      "alias": [
+        "Battlefield Of Eternity",
+        "boe"
+      ]
+    },
+    {
+      "name": "Blackheart's Bay",
+      "alias": [
+        "Blackheart's Bay",
+        "bhb"
+      ]
+    },
+    {
+      "name": "Braxis Holdout",
+      "alias": [
+        "Braxis Holdout",
+        "Brexit"
+      ]
+    },
+    {
+      "name": "Cursed Hollow",
+      "alias": [
+        "Cursed Hollow"
+      ]
+    },
+    {
+      "name": "Dragon Shire",
+      "alias": [
+        "Dragon Shire"
+      ]
+    },
+    {
+      "name": "Garden of Terror",
+      "alias": [
+        "Garden of Terror",
+        "got"
+      ]
+    },
+    {
+      "name": "Hanamura Temple",
+      "alias": [
+        "Hanamura Temple"
+      ]
+    },
+    {
+      "name": "Haunted Mines",
+      "alias": [
+        "Haunted Mines"
+      ]
+    },
+    {
+      "name": "Infernal Shrines",
+      "alias": [
+        "Infernal Shrines"
+      ]
+    },
+    {
+      "name": "Sky Temple",
+      "alias": [
+        "Sky Temple"
+      ]
+    },
+    {
+      "name": "Tomb of the Spider Queen",
+      "alias": [
+        "Tomb of the Spider Queen",
+        "tots"
+      ]
+    },
+    {
+      "name": "Towers of Doom",
+      "alias": [
+        "Towers of Doom",
+        "tod"
+      ]
+    },
+    {
+      "name": "Volskaya Foundry",
+      "alias": [
+        "Volskaya Foundry",
+        "30 minute clown fiesta"
+      ]
+    },
+    {
+      "name": "Warhead Junction",
+      "alias": [
+        "Warhead Junction"
+      ]
+    }
   ],
   "hero": [
-    "Abathur",
-    "Alarak",
-    "Alexstrasza",
-    "Ana",
-    "Anub'arak",
-    "Artanis",
-    "Arthas",
-    "Auriel",
-    "Azmodan",
-    "Blaze",
-    "Brightwing",
-    "Cassia",
-    "Chen",
-    "Cho",
-    "Chromie",
-    "D.Va",
-    "Deathwing",
-    "Deckard",
-    "Dehaka",
-    "Diablo",
-    "E.T.C.",
-    "Falstad",
-    "Fenix",
-    "Gall",
-    "Garrosh",
-    "Gazlowe",
-    "Genji",
-    "Greymane",
-    "Gul'dan",
-    "Hanzo",
-    "Hogger",
-    "Illidan",
-    "Imperius",
-    "Jaina",
-    "Johanna",
-    "Junkrat",
-    "Kael'thas",
-    "Kel'Thuzad",
-    "Kerrigan",
-    "Kharazim",
-    "Leoric",
-    "Li Li",
-    "Li-Ming",
-    "Lost Vikings",
-    "Lt. Morales",
-    "Lucio",
-    "Lunara",
-    "Maiev",
-    "Mal'Ganis",
-    "Malfurion",
-    "Malthael",
-    "Mei",
-    "Medivh",
-    "Mephisto",
-    "Muradin",
-    "Murky",
-    "Nazeebo",
-    "Nova",
-    "Orphea",
-    "Probius",
-    "Khira",
-    "Ragnaros",
-    "Raynor",
-    "Rehgar",
-    "Rexxar",
-    "Samuro",
-    "Sgt. Hammer",
-    "Sonya",
-    "Stitches",
-    "Stukov",
-    "Sylvanas",
-    "Tassadar",
-    "The Butcher",
-    "Thrall",
-    "Tracer",
-    "Tychus",
-    "Tyrael",
-    "Tyrande",
-    "Uther",
-    "Valeera",
-    "Valla",
-    "Varian",
-    "Whitemane",
-    "Xul",
-    "Yrel",
-    "Zagara",
-    "Zarya",
-    "Zeratul",
-    "Zul'jin"
+    {
+      "name": "Abathur",
+      "alias": [
+        "Abathur"
+      ]
+    },
+    {
+      "name": "Alarak",
+      "alias": [
+        "Alarak"
+      ]
+    },
+    {
+      "name": "Alexstrasza",
+      "alias": [
+        "Alexstrasza"
+      ]
+    },
+    {
+      "name": "Ana",
+      "alias": [
+        "Ana"
+      ]
+    },
+    {
+      "name": "Anub'arak",
+      "alias": [
+        "Anub'arak"
+      ]
+    },
+    {
+      "name": "Artanis",
+      "alias": [
+        "Artanis"
+      ]
+    },
+    {
+      "name": "Arthas",
+      "alias": [
+        "Arthas"
+      ]
+    },
+    {
+      "name": "Auriel",
+      "alias": [
+        "Auriel"
+      ]
+    },
+    {
+      "name": "Azmodan",
+      "alias": [
+        "Azmodan"
+      ]
+    },
+    {
+      "name": "Blaze",
+      "alias": [
+        "Blaze"
+      ]
+    },
+    {
+      "name": "Brightwing",
+      "alias": [
+        "Brightwing"
+      ]
+    },
+    {
+      "name": "Cassia",
+      "alias": [
+        "Cassia"
+      ]
+    },
+    {
+      "name": "Chen",
+      "alias": [
+        "Chen"
+      ]
+    },
+    {
+      "name": [
+        "Cho",
+        "Gall"
+      ],
+      "alias": [
+        "Cho",
+        "Gall",
+        "Chogall"
+      ]
+    },
+    {
+      "name": "Chromie",
+      "alias": [
+        "Chromie"
+      ]
+    },
+    {
+      "name": "D.Va",
+      "alias": [
+        "D.Va",
+        "Dva"
+      ]
+    },
+    {
+      "name": "Deathwing",
+      "alias": [
+        "Deathwing"
+      ]
+    },
+    {
+      "name": "Deckard",
+      "alias": [
+        "Deckard",
+        "Deckard Cain"
+      ]
+    },
+    {
+      "name": "Dehaka",
+      "alias": [
+        "Dehaka",
+        "dhk"
+      ]
+    },
+    {
+      "name": "Diablo",
+      "alias": [
+        "Diablo"
+      ]
+    },
+    {
+      "name": "E.T.C.",
+      "alias": [
+        "E.T.C.",
+        "ETC"
+      ]
+    },
+    {
+      "name": "Falstad",
+      "alias": [
+        "Falstad"
+      ]
+    },
+    {
+      "name": "Fenix",
+      "alias": [
+        "Fenix"
+      ]
+    },
+    {
+      "name": "Garrosh",
+      "alias": [
+        "Garrosh"
+      ]
+    },
+    {
+      "name": "Gazlowe",
+      "alias": [
+        "Gazlowe"
+      ]
+    },
+    {
+      "name": "Genji",
+      "alias": [
+        "Genji"
+      ]
+    },
+    {
+      "name": "Greymane",
+      "alias": [
+        "Greymane"
+      ]
+    },
+    {
+      "name": "Gul'dan",
+      "alias": [
+        "Gul'dan",
+        "Guldan"
+      ]
+    },
+    {
+      "name": "Hanzo",
+      "alias": [
+        "Hanzo"
+      ]
+    },
+    {
+      "name": "Hogger",
+      "alias": [
+        "Hogger"
+      ]
+    },
+    {
+      "name": "Illidan",
+      "alias": [
+        "Illidan"
+      ]
+    },
+    {
+      "name": "Imperius",
+      "alias": [
+        "Imperius"
+      ]
+    },
+    {
+      "name": "Jaina",
+      "alias": [
+        "Jaina"
+      ]
+    },
+    {
+      "name": "Johanna",
+      "alias": [
+        "Johanna"
+      ]
+    },
+    {
+      "name": "Junkrat",
+      "alias": [
+        "Junkrat"
+      ]
+    },
+    {
+      "name": "Kael'thas",
+      "alias": [
+        "Kael'thas",
+        "Kael"
+      ]
+    },
+    {
+      "name": "Kel'Thuzad",
+      "alias": [
+        "Kel'Thuzad",
+        "Kelthuzad",
+        "Kel"
+      ]
+    },
+    {
+      "name": "Kerrigan",
+      "alias": [
+        "Kerrigan"
+      ]
+    },
+    {
+      "name": "Kharazim",
+      "alias": [
+        "Kharazim"
+      ]
+    },
+    {
+      "name": "Leoric",
+      "alias": [
+        "Leoric"
+      ]
+    },
+    {
+      "name": "Li Li",
+      "alias": [
+        "Li Li",
+        "lili"
+      ]
+    },
+    {
+      "name": "Li-Ming",
+      "alias": [
+        "Li-Ming",
+        "Liming",
+        "ming"
+      ]
+    },
+    {
+      "name": "Lost Vikings",
+      "alias": [
+        "Lost Vikings",
+        "tlv"
+      ]
+    },
+    {
+      "name": "Lt. Morales",
+      "alias": [
+        "Lt. Morales",
+        "medic"
+      ]
+    },
+    {
+      "name": "Lucio",
+      "alias": [
+        "Lucio"
+      ]
+    },
+    {
+      "name": "Lunara",
+      "alias": [
+        "Lunara"
+      ]
+    },
+    {
+      "name": "Maiev",
+      "alias": [
+        "Maiev"
+      ]
+    },
+    {
+      "name": "Mal'Ganis",
+      "alias": [
+        "Mal'Ganis"
+      ]
+    },
+    {
+      "name": "Malfurion",
+      "alias": [
+        "Malfurion"
+      ]
+    },
+    {
+      "name": "Malthael",
+      "alias": [
+        "Malthael"
+      ]
+    },
+    {
+      "name": "Mei",
+      "alias": [
+        "Mei"
+      ]
+    },
+    {
+      "name": "Medivh",
+      "alias": [
+        "Medivh"
+      ]
+    },
+    {
+      "name": "Mephisto",
+      "alias": [
+        "Mephisto"
+      ]
+    },
+    {
+      "name": "Muradin",
+      "alias": [
+        "Muradin"
+      ]
+    },
+    {
+      "name": "Murky",
+      "alias": [
+        "Murky"
+      ]
+    },
+    {
+      "name": "Nazeebo",
+      "alias": [
+        "Nazeebo"
+      ]
+    },
+    {
+      "name": "Nova",
+      "alias": [
+        "Nova"
+      ]
+    },
+    {
+      "name": "Orphea",
+      "alias": [
+        "Orphea"
+      ]
+    },
+    {
+      "name": "Probius",
+      "alias": [
+        "Probius"
+      ]
+    },
+    {
+      "name": "Khira",
+      "alias": [
+        "Khira"
+      ]
+    },
+    {
+      "name": "Ragnaros",
+      "alias": [
+        "Ragnaros"
+      ]
+    },
+    {
+      "name": "Raynor",
+      "alias": [
+        "Raynor",
+        "jimmy"
+      ]
+    },
+    {
+      "name": "Rehgar",
+      "alias": [
+        "Rehgar"
+      ]
+    },
+    {
+      "name": "Rexxar",
+      "alias": [
+        "Rexxar",
+        "misha"
+      ]
+    },
+    {
+      "name": "Samuro",
+      "alias": [
+        "Samuro"
+      ]
+    },
+    {
+      "name": "Sgt. Hammer",
+      "alias": [
+        "Sgt. Hammer"
+      ]
+    },
+    {
+      "name": "Sonya",
+      "alias": [
+        "Sonya"
+      ]
+    },
+    {
+      "name": "Stitches",
+      "alias": [
+        "Stitches"
+      ]
+    },
+    {
+      "name": "Stukov",
+      "alias": [
+        "Stukov"
+      ]
+    },
+    {
+      "name": "Sylvanas",
+      "alias": [
+        "Sylvanas"
+      ]
+    },
+    {
+      "name": "Tassadar",
+      "alias": [
+        "Tassadar"
+      ]
+    },
+    {
+      "name": "The Butcher",
+      "alias": [
+        "The Butcher"
+      ]
+    },
+    {
+      "name": "Thrall",
+      "alias": [
+        "Thrall"
+      ]
+    },
+    {
+      "name": "Tracer",
+      "alias": [
+        "Tracer"
+      ]
+    },
+    {
+      "name": "Tychus",
+      "alias": [
+        "Tychus"
+      ]
+    },
+    {
+      "name": "Tyrael",
+      "alias": [
+        "Tyrael"
+      ]
+    },
+    {
+      "name": "Tyrande",
+      "alias": [
+        "Tyrande"
+      ]
+    },
+    {
+      "name": "Uther",
+      "alias": [
+        "Uther"
+      ]
+    },
+    {
+      "name": "Valeera",
+      "alias": [
+        "Valeera"
+      ]
+    },
+    {
+      "name": "Valla",
+      "alias": [
+        "Valla"
+      ]
+    },
+    {
+      "name": "Varian",
+      "alias": [
+        "Varian"
+      ]
+    },
+    {
+      "name": "Whitemane",
+      "alias": [
+        "Whitemane"
+      ]
+    },
+    {
+      "name": "Xul",
+      "alias": [
+        "Xul"
+      ]
+    },
+    {
+      "name": "Yrel",
+      "alias": [
+        "Yrel"
+      ]
+    },
+    {
+      "name": "Zagara",
+      "alias": [
+        "Zagara"
+      ]
+    },
+    {
+      "name": "Zarya",
+      "alias": [
+        "Zarya"
+      ]
+    },
+    {
+      "name": "Zeratul",
+      "alias": [
+        "Zeratul"
+      ]
+    },
+    {
+      "name": "Zul'jin",
+      "alias": [
+        "Zul'jin"
+      ]
+    }
   ]
 }
