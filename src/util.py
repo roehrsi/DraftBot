@@ -8,7 +8,7 @@ def isin(kind: str, arg1: str, arg2: str = None) -> list:
     Utilizes fuzzy regex for arguments of sufficient length, so typos are sometimes overlooked.
     Don't expect AI miracles here...
     The pool of maps and heroes works with aliases, so some common alternative spellings or shorthands are accepted.
-    If the Number of confirmed entries does not equal the arguments given, returns empty.
+    [~~If the Number of confirmed entries does not equal the arguments given, returns empty.~~ disabled].
     Otherwise return a list of confirmed entries."""
 
     if kind == "map" or "hero":
@@ -32,11 +32,11 @@ def isin(kind: str, arg1: str, arg2: str = None) -> list:
                 for alias in entry["alias"]:
                     # add entry, if any aliases match the argument
                     if regex.search(pattern, alias, regex.IGNORECASE):
-                        match.append(entry["name"])
+                        match = match.append(entry["name"]) if isinstance(entry["name"], str) else match.extend(
+                            entry["name"])
                         break
-        # assert one result for each argument
-        if len(match) == len(args):
-            result = match
+        # assert at most 2 results.
+        result = match[:2]
 
         print(f"final match: {result}")
         return result
