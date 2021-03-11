@@ -16,7 +16,7 @@ help_embed = {
                    "He can help you draft the team of your dream in Heroes of the Storm! "
                    "Take a minute to read the command doc below to get started.",
     "color": 0xff8040,
-    "author": {"name":"DraftBot"},
+    "author": {"name": "DraftBot"},
     "url": "https://github.com/roehrsi/DraftBot",
     "fields": [
         {"name": "!draft",
@@ -55,4 +55,17 @@ help_embed = {
 
     ],
     "footer": {"text": "GL HF!"}
+}
+
+draft_status = {
+    0: "{0} bans a map -->",
+    1: "<-- {0} bans a map",
+    2: "{0} picks a map -->",
+    3: "<-- {0} bans a hero",
+    4: "{0} bans a hero -->",
+    5: "<-- {0} picks a hero",
+    6: "<-- {0} has the first pick",
+    7: "{0} picks a hero -->",
+    8: "{0} has the last pick -->",
+    9: "Finished"
 }
