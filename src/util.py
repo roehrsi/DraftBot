@@ -32,8 +32,7 @@ def isin(kind: str, arg1: str, arg2: str = None) -> list:
                 for alias in entry["alias"]:
                     # add entry, if any aliases match the argument
                     if regex.search(pattern, alias, regex.IGNORECASE):
-                        match = match.append(entry["name"]) if isinstance(entry["name"], str) else match.extend(
-                            entry["name"])
+                        match.append(entry["name"]) if isinstance(entry["name"], str) else match.extend(entry["name"])
                         break
         # assert at most 2 results.
         result = match[:2]
