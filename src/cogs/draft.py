@@ -43,11 +43,13 @@ class DraftCog(commands.Cog, name="DraftCog"):
             # self.currentDraft = None
 
     def print_embed(self):
+        draft = self.currentDraft
         embed = discord.Embed(title="Draft:", color=0xff8040)
-        embed.add_field(name=self.currentDraft.team_first.captain, value=repr(self.currentDraft.team_first),
+        embed.add_field(name=draft.team_first.captain, value=repr(draft.team_first),
                         inline=True)
-        embed.add_field(name=self.currentDraft.team_second.captain, value=repr(self.currentDraft.team_second),
+        embed.add_field(name=draft.team_second.captain, value=repr(draft.team_second),
                         inline=True)
+        embed.add_field(name="Status:", value=draft.status(), inline=False)
         return embed
 
     async def update_embed(self):
