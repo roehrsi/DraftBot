@@ -6,7 +6,7 @@ GREETING = "Welcome to the draft, {0} \n " \
            "If you want to draft a map, type ``!draft tournament`` to start the coin flip and draft a map.\n " \
            "Otherwise use ``!draft quick [map]`` to skip map draft and pick a map directly, then do the coin flip.\n " \
            "If you want to restart the draft, simply call this base command again to reset all parameters."
-REDUNDANT_PICK = "This {0} is already picked. Try something different.",
+REDUNDANT_PICK = "This {0} is already picked. Try something different."
 ILLEGAL_PICK = "You cannot pick a banned {0}."
 DRAFT_RESET = "The draft has been reset and deleted."
 

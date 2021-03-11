@@ -16,13 +16,12 @@ def isin(kind: str, arg1: str, arg2: str = None) -> list:
             jfile = json.load(res)
             pool = jfile[kind]
         if arg2:
-            args = "".join(arg1, arg2) if kind == "map" else (arg1, arg2)
+            args = str.lower("".join(arg1, arg2)) if kind == "map" else (str.lower(arg1), str.lower(arg2))
         else:
-            args = [arg1]
+            args = [str.lower(arg1)]
 
         print(f"args: {args}")
         match = []
-        result = []
         # iterate over aliases for pool elements and try to regex match to arguments
         for arg in args:
             # pattern fuzz depends on argument length. floordiv 4 seems like a good baseline for this...
@@ -35,7 +34,14 @@ def isin(kind: str, arg1: str, arg2: str = None) -> list:
                         match.append(entry["name"]) if isinstance(entry["name"], str) else match.extend(entry["name"])
                         break
         # assert at most 2 results.
-        result = match[:2]
+        print(f"final match: {match}")
+        if len(match) > len(args):
+            if match[:2] == ["Cho", "Gall"]:
+                return match[:2]
+            else:
+                result = [m for m in match if str.lower(m) in args]
+                print(f"result: {result}")
+                return result
 
-        print(f"final match: {result}")
-        return result
+        else:
+            return match

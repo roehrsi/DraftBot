@@ -1,5 +1,7 @@
 from typing import List
 
+import discord
+
 from src import dicts
 
 SECOND_MAP_BANS = 0
@@ -18,7 +20,7 @@ class Team:
     """The team data is stored here.
     Contains bans, picks, captain name"""
 
-    def __init__(self, captain="", map_bans=None, map_pick="-", hero_bans=None, hero_picks=None):
+    def __init__(self, captain: discord.Member = None, map_bans=None, map_pick="-", hero_bans=None, hero_picks=None):
         self.captain = captain
         self.map_bans = map_bans
         self.map_pick = map_pick
@@ -48,6 +50,7 @@ class Draft:
 
     def __init__(self, team_first: Team = None, team_second: Team = None, stage_num: int = 0, mb_num: int = 2,
                  tm_num: int = 5):
+        self.draft_message = None
         self.stage_num = stage_num
         self.team_first = team_first
         self.team_second = team_second
@@ -87,9 +90,9 @@ class Draft:
             self.SECOND_HERO_PICKS = self.LAST_PICK = self.FIRST_PICK + 1
         # init teams if empty
         if team_first is None:
-            self.team_first = Team("", [], "", [], [])
+            self.team_first = Team(None, [], "", [], [])
         if team_second is None:
-            self.team_second = Team("", [], "", [], [])
+            self.team_second = Team(None, [], "", [], [])
 
     def stage(self) -> int:
         """This will return the stage that is currently happening.
@@ -114,9 +117,9 @@ class Draft:
     def turn(self) -> int:
         """Return which teams turn it is.
         :returns: 0 for first team; 1 for second team"""
-        if self.stage() in [FIRST_MAP_BANS, FIRST_HERO_BANS, FIRST_HERO_PICKS]:
+        if self.stage() in [FIRST_MAP_BANS, FIRST_HERO_BANS, FIRST_HERO_PICKS, FIRST_PICK]:
             return 0
-        elif self.stage() in [SECOND_MAP_BANS, SECOND_HERO_BANS, SECOND_HERO_PICKS, MAP_PICK]:
+        elif self.stage() in [SECOND_MAP_BANS, SECOND_HERO_BANS, SECOND_HERO_PICKS, MAP_PICK, LAST_PICK]:
             return 1
 
     def lock(self, picks: List[str]) -> None:
@@ -127,43 +130,34 @@ class Draft:
         if self.stage() == SECOND_MAP_BANS:
             self.team_second.map_bans.append(picks[0])
             self.stage_num += 1
-            return
         elif self.stage() == FIRST_MAP_BANS:
             self.team_first.map_bans.append((picks[0]))
             self.stage_num += 1
-            return
         # pick map
         elif self.stage() == MAP_PICK:
             self.team_second.map_pick = picks[0]
             self.stage_num += 1
-            return
         # ban heroes
         elif self.stage() == FIRST_HERO_BANS:
             self.team_first.hero_bans.append(picks[0])
             self.stage_num += 1
-            return
         elif self.stage() == SECOND_HERO_BANS:
             self.team_second.hero_bans.append(picks[0])
             self.stage_num += 1
-            return
         # pick heroes
         elif self.stage() == FIRST_HERO_PICKS:
-            if self.stage() == FIRST_PICK:
-                self.team_first.hero_picks.append(picks[0])
-                self.stage_num += 1
-            else:
-                self.team_first.hero_picks.extend(picks)
-                self.stage_num += len(picks)
-            return
+            self.team_first.hero_picks.extend(picks)
+            self.stage_num += len(picks)
+        elif self.stage() == FIRST_PICK:
+            self.team_first.hero_picks.append(picks[0])
+            self.stage_num += 1
         elif self.stage() == SECOND_HERO_PICKS:
-            if self.stage() == LAST_PICK:
-                self.team_second.hero_picks.append(picks[0])
-                self.stage_num += 1
-            else:
-                self.team_second.hero_picks.extend(picks)
-                self.stage_num += len(picks)
-            return
+            self.team_second.hero_picks.extend(picks)
+            self.stage_num += len(picks)
+        elif self.stage() == LAST_PICK:
+            self.team_second.hero_picks.append(picks[0])
+            self.stage_num += 1
 
     def status(self) -> str:
         return dicts.draft_status[self.stage()].format(
-            self.team_first.captain if self.turn() else self.team_second.captain)
+            self.team_first.captain.name if self.turn() else self.team_second.captain.name)
