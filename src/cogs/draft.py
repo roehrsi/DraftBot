@@ -50,9 +50,9 @@ class DraftCog(commands.Cog, name="DraftCog"):
     @staticmethod
     def print_embed(draft: Draft):
         embed = discord.Embed(title="Draft:", color=0xff8040)
-        embed.add_field(name=draft.team_first.captain.name, value=repr(draft.team_first),
+        embed.add_field(name=draft.team_first.captain.display_name, value=repr(draft.team_first),
                         inline=True)
-        embed.add_field(name=draft.team_second.captain.name, value=repr(draft.team_second),
+        embed.add_field(name=draft.team_second.captain.display_name, value=repr(draft.team_second),
                         inline=True)
         embed.add_field(name="Status:", value=draft.status(), inline=False)
         return embed
@@ -90,9 +90,9 @@ class DraftCog(commands.Cog, name="DraftCog"):
         await message.add_reaction(DELETE_DRAFT_EMOJI)
         draft.draft_message = message
         self.pending_drafts.update({ctx.author.id: draft, member.id: draft})
-        await ctx.send(
-            f"{draft.team_first.captain.name} won the coin toss! {draft.team_second.captain.name} can start ``!ban``ning a map now.",
-            delete_after=DELAY)
+        """await ctx.send(
+            f"{draft.team_first.captain.display_name} won the coin toss! {draft.team_second.captain.name} can start ``!ban``ning a map now.",
+            delete_after=DELAY)"""
 
     @draft.command()
     async def quick(self, ctx, arg, member: discord.Member):
@@ -108,11 +108,11 @@ class DraftCog(commands.Cog, name="DraftCog"):
             draft.draft_message = message
             await message.add_reaction(DELETE_DRAFT_EMOJI)
             self.pending_drafts.update({ctx.author.id: draft, member.id: draft})
-            await ctx.send(
-                f"{draft.team_second.captain.name} picked **{draft.team_second.map_pick}**!\n "
+            """await ctx.send(
+                f"{draft.team_second.captain.display_name} picked **{draft.team_second.map_pick}**!\n "
                 f"Please start banning two heroes each by writing ``!ban [hero]``. "
-                f"{draft.team_first.captain.name} goes first!",
-                delete_after=DELAY)
+                f"{draft.team_first.captain.display_name} goes first!",
+                delete_after=DELAY)"""
         else:
             await ctx.send(dicts.NO_MATCH.format(kind), delete_after=DELAY)
 
@@ -139,7 +139,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
                         await ctx.send(dicts.REDUNDANT_PICK.format(kind), delete_after=DELAY)
                     else:
                         draft.lock(bans)
-                        await self.status_verbose(ctx)
+                        # await self.status_verbose(ctx)
         await self.update_embed(ctx.author)
 
     @commands.command()
@@ -171,7 +171,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
                             await ctx.send("Cannot pick Cho'Gall during single pick phases :(", delete_after=DELAY)
                         else:
                             draft.lock(picks)
-                            await self.status_verbose(ctx)
+                            # await self.status_verbose(ctx)
         await self.update_embed(ctx.author)
 
     @draft.command()

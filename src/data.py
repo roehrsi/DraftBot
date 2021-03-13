@@ -160,4 +160,4 @@ class Draft:
 
     def status(self) -> str:
         return dicts.draft_status[self.stage()].format(
-            self.team_first.captain.name if self.turn() else self.team_second.captain.name)
+            self.team_first.captain.name if not self.turn() else self.team_second.captain.name)

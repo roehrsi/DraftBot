@@ -58,14 +58,14 @@ help_embed = {
 }
 
 draft_status = {
-    0: "{0} bans a map -->",
-    1: "<-- {0} bans a map",
-    2: "{0} picks a map -->",
-    3: "<-- {0} bans a hero",
-    4: "{0} bans a hero -->",
-    5: "<-- {0} picks a hero",
-    6: "<-- {0} has the first pick",
-    7: "{0} picks a hero -->",
-    8: "{0} has the last pick -->",
+    0: "{0} **!ban** s a map -->",
+    1: "<-- {0} **!ban** s a map",
+    2: "{0} **!pick** s a map -->",
+    3: "<-- {0} **!ban** s a hero",
+    4: "{0} **!ban** s a hero -->",
+    5: "<-- {0} **!pick** s a hero",
+    6: "<-- {0} has the first **!pick**",
+    7: "{0} **!pick** s a hero -->",
+    8: "{0} has the last **!pick** -->",
     9: "Finished"
 }
