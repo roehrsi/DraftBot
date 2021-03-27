@@ -56,6 +56,7 @@ class Draft:
         self.team_second = team_second
         self.num_map_bans = mb_num if mb_num in range(0, 8) else 2
         self.num_team_members = tm_num if tm_num in range(1, 6) else 5
+
         # init stages
         # map bans are alternating
         self.SECOND_MAP_BANS = [*range(0, mb_num * 2, 2)]
@@ -67,6 +68,10 @@ class Draft:
         self.SECOND_HERO_BANS = [*range(self.MAP_PICK + 2, self.MAP_PICK + 6, 2)]
         # first pick comes after last ban. basis for all other picks
         self.FIRST_PICK = self.SECOND_HERO_BANS[-1] + 1
+
+        # The following stages depend on number of picks for each team.
+        # First and last pick convention is not applicable for even team sizes
+        # for 5 Team Members
         if self.num_team_members == 5:
             self.FIRST_HERO_PICKS = [self.FIRST_PICK, self.FIRST_PICK + 3, self.FIRST_PICK + 4, self.FIRST_PICK + 9,
                                      self.FIRST_PICK + 10]
@@ -75,19 +80,24 @@ class Draft:
             self.SECOND_HERO_BANS = self.SECOND_HERO_BANS + [self.FIRST_PICK + 5]
             self.FIRST_HERO_BANS = self.FIRST_HERO_BANS + [self.FIRST_PICK + 6]
             self.LAST_PICK = self.SECOND_HERO_PICKS[-1]
+        # for 4 Team members #todo implement
         elif self.num_team_members == 4:
             pass
+        # for 3 Team members
         elif self.num_team_members == 3:
             self.FIRST_HERO_PICKS = [self.FIRST_PICK, self.FIRST_PICK + 5, self.FIRST_PICK + 6]
             self.SECOND_HERO_PICKS = [self.FIRST_PICK + 1, self.FIRST_PICK + 2, self.FIRST_PICK + 7]
             self.SECOND_HERO_BANS = self.SECOND_HERO_BANS + [self.FIRST_PICK + 3]
             self.FIRST_HERO_BANS = self.FIRST_HERO_BANS + [self.FIRST_PICK + 4]
             self.LAST_PICK = self.SECOND_HERO_PICKS[-1]
+        # for 2 Team members #todo implement
         elif self.num_team_members == 2:
             pass
+        # for 1 Team member
         elif self.num_team_members == 1:
             self.FIRST_HERO_PICKS = self.FIRST_PICK
             self.SECOND_HERO_PICKS = self.LAST_PICK = self.FIRST_PICK + 1
+
         # init teams if empty
         if team_first is None:
             self.team_first = Team(None, [], "", [], [])
