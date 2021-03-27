@@ -24,7 +24,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
         jfile = json.load(file)
         VERBOSE = jfile["verbose"]
 
-    async def status_verbose(self, ctx):
+    """async def status_verbose(self, ctx):
         if self.VERBOSE:
             draft = self.get_user_draft(ctx.author)
             if draft:
@@ -42,7 +42,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
                 if draft.stage() == (SECOND_HERO_BANS or FIRST_HERO_BANS):
                     await ctx.send(f"{draft.team_second.captain.name} bans another hero next!", delete_after=DELAY)
                 if draft.stage() == (FIRST_HERO_PICKS or SECOND_HERO_PICKS):
-                    await ctx.send(f"{draft.team_second.captain.name} continues picking!", delete_after=DELAY)
+                    await ctx.send(f"{draft.team_second.captain.name} continues picking!", delete_after=DELAY)"""
 
     def get_user_draft(self, member: discord.Member) -> Draft:
         return self.pending_drafts.get(member.id)
@@ -59,12 +59,14 @@ class DraftCog(commands.Cog, name="DraftCog"):
 
     async def update_embed(self, member: discord.Member):
         draft: Draft = self.pending_drafts.get(member.id)
-        message = draft.draft_message
+        message: discord.Message = draft.draft_message
         await message.edit(embed=self.print_embed(draft))
-        # remove captains from pending drafts
+        # remove captains from pending drafts. clear reactions
         if draft.stage() == FIN:
+            await message.clear_reactions()
             self.pending_drafts.pop(draft.team_first.captain.id)
-            self.pending_drafts.pop(draft.team_second.captain.id)
+            if draft.team_first.captain.id != draft.team_second.captain.id:
+                self.pending_drafts.pop(draft.team_second.captain.id)
 
     @staticmethod
     def greeting(ctx):
@@ -76,11 +78,10 @@ class DraftCog(commands.Cog, name="DraftCog"):
         if ctx.invoked_subcommand is None:
             await ctx.send(self.greeting(ctx), delete_after=20)
 
-    @draft.command()
+    @draft.command(aliases=["t"])
     async def tournament(self, ctx, member: discord.Member):
         draft = Draft()
-        coin = randint(0, 1)
-        if coin == 1:
+        if randint(0, 1):
             draft.team_first = Team(captain=ctx.author)
             draft.team_second = Team(captain=member)
         else:
@@ -90,11 +91,8 @@ class DraftCog(commands.Cog, name="DraftCog"):
         await message.add_reaction(DELETE_DRAFT_EMOJI)
         draft.draft_message = message
         self.pending_drafts.update({ctx.author.id: draft, member.id: draft})
-        """await ctx.send(
-            f"{draft.team_first.captain.display_name} won the coin toss! {draft.team_second.captain.name} can start ``!ban``ning a map now.",
-            delete_after=DELAY)"""
 
-    @draft.command()
+    @draft.command(aliases=["q"])
     async def quick(self, ctx, arg, member: discord.Member):
         draft = Draft()
         kind = "map"
@@ -123,19 +121,24 @@ class DraftCog(commands.Cog, name="DraftCog"):
         if not draft:
             await ctx.send(dicts.NO_DRAFT, delete_after=DELAY)
         else:
-            if (ctx.author.id == draft.team_first.captain.id and draft.turn() == 0) or (
-                    ctx.author.id == draft.team_second.captain.id and draft.turn() == 1):
+            if draft.phase() == BAN \
+                    and ((ctx.author.id == draft.team_first.captain.id and draft.turn() == 0) or (
+                    ctx.author.id == draft.team_second.captain.id and draft.turn() == 1)):
                 kind = "map" if draft.stage_num <= 4 else "hero"
+                # notice bans are always single arguments.
                 bans = isin(kind, arg)
                 if not bans:
                     await ctx.send(dicts.NO_MATCH.format(kind), delete_after=DELAY)
                 # lock in the ban
                 else:
                     # check bans for duplicates
-                    if any(ban in (draft.team_first.map_bans
-                                   + draft.team_second.map_bans
-                                   + draft.team_first.hero_bans
-                                   + draft.team_second.hero_bans) for ban in bans):
+                    if any(bans in (draft.team_first.map_bans
+                                    + draft.team_second.map_bans
+                                    + draft.team_first.hero_bans
+                                    + draft.team_second.hero_bans) for bans in bans):
+                        await ctx.send(dicts.ILLEGAL_PICK.format(kind), delete_after=DELAY)
+                    elif any(bans in (draft.team_first.hero_picks
+                                      + draft.team_second.hero_picks) for bans in bans):
                         await ctx.send(dicts.REDUNDANT_PICK.format(kind), delete_after=DELAY)
                     else:
                         draft.lock(bans)
@@ -149,8 +152,9 @@ class DraftCog(commands.Cog, name="DraftCog"):
         if not draft:
             await ctx.send(dicts.NO_DRAFT, delete_after=DELAY)
         else:
-            if (ctx.author.id == draft.team_first.captain.id and draft.turn() == 0) or (
-                    ctx.author.id == draft.team_second.captain.id and draft.turn() == 1):
+            if draft.phase() == PICK \
+                    and ((ctx.author.id == draft.team_first.captain.id and draft.turn() == 0) or (
+                    ctx.author.id == draft.team_second.captain.id and draft.turn() == 1)):
                 kind = "map" if draft.stage_num <= 4 else "hero"
                 picks = isin(kind, arg1, arg2)
                 if not picks:
@@ -158,17 +162,18 @@ class DraftCog(commands.Cog, name="DraftCog"):
                 # lock in pick
                 else:
                     # check for banned picks
-                    if any(pick in (draft.team_first.map_bans
-                                    + draft.team_second.map_bans
-                                    + draft.team_first.hero_bans
-                                    + draft.team_second.hero_bans) for pick in picks):
+                    if any(picks in (draft.team_first.map_bans
+                                     + draft.team_second.map_bans
+                                     + draft.team_first.hero_bans
+                                     + draft.team_second.hero_bans) for picks in picks):
                         await ctx.send(dicts.ILLEGAL_PICK.format(kind), delete_after=DELAY)
-                    elif picks in (draft.team_first.hero_picks
-                                   + draft.team_second.hero_picks):
+                    elif any(picks in (draft.team_first.hero_picks
+                                       + draft.team_second.hero_picks) for picks in picks):
                         await ctx.send(dicts.REDUNDANT_PICK.format(kind), delete_after=DELAY)
                     else:
-                        if picks == ["Cho", "Gall"] and draft.stage() == (FIRST_PICK or LAST_PICK):
-                            await ctx.send("Cannot pick Cho'Gall during single pick phases :(", delete_after=DELAY)
+                        print("turn: ", draft.turn(), draft.turn(draft.stage_num + 1))
+                        if (picks == ["Cho", "Gall"]) and (draft.turn() != draft.turn(draft.stage_num + 1)):
+                            await ctx.send("Must pick Cho'Gall during double pick phases :(", delete_after=DELAY)
                         else:
                             draft.lock(picks)
                             # await self.status_verbose(ctx)
