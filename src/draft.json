@@ -125,6 +125,12 @@
       ]
     },
     {
+      "name": "Anduin",
+      "alias": [
+        "Anduin"
+      ]
+    },
+    {
       "name": "Anub'arak",
       "alias": [
         "Anub'arak"
@@ -412,7 +418,8 @@
     {
       "name": "Malfurion",
       "alias": [
-        "Malfurion"
+        "Malfurion",
+        "Malf"
       ]
     },
     {
