@@ -51,21 +51,21 @@ class Team:
 class Draft:
     """The Draft instance that will be used to keep track of the active draft"""
 
-    def __init__(self, team_first: Team = None, team_second: Team = None, stage_num: int = 0, mb_num: int = 2,
-                 tm_num: int = 5):
+    def __init__(self, team_first: Team = None, team_second: Team = None, stage_num: int = 0, map_bans: int = 2,
+                 team_size: int = 5):
         self.draft_message = None
         self.stage_num = stage_num
         self.team_first = team_first
         self.team_second = team_second
-        self.num_map_bans = mb_num if mb_num in range(0, 8) else 2
-        self.num_team_members = tm_num if tm_num in range(1, 6) else 5
+        self.map_bans = map_bans if map_bans in range(0, 8) else 2
+        self.team_size = team_size if team_size in range(1, 6) else 5
 
         # init stages
         # map bans are alternating
-        self.SECOND_MAP_BANS = [*range(0, mb_num * 2, 2)]
-        self.FIRST_MAP_BANS = [*range(1, mb_num * 2, 2)]
+        self.SECOND_MAP_BANS = [*range(0, map_bans * 2, 2)]
+        self.FIRST_MAP_BANS = [*range(1, map_bans * 2, 2)]
         # map pick comes after map bans
-        self.MAP_PICK = self.num_map_bans * 2
+        self.MAP_PICK = self.map_bans * 2
         # 2 bans each after map pick
         self.FIRST_HERO_BANS = [*range(self.MAP_PICK + 1, self.MAP_PICK + 5, 2)]
         self.SECOND_HERO_BANS = [*range(self.MAP_PICK + 2, self.MAP_PICK + 6, 2)]
@@ -75,7 +75,7 @@ class Draft:
         # The following stages depend on number of picks for each team.
         # First and last pick convention is not applicable for even team sizes
         # for 5 Team Members
-        if self.num_team_members == 5:
+        if self.team_size == 5:
             self.FIRST_HERO_PICKS = [self.FIRST_PICK, self.FIRST_PICK + 3, self.FIRST_PICK + 4, self.FIRST_PICK + 9,
                                      self.FIRST_PICK + 10]
             self.SECOND_HERO_PICKS = [self.FIRST_PICK + 1, self.FIRST_PICK + 2, self.FIRST_PICK + 7,
@@ -84,20 +84,20 @@ class Draft:
             self.FIRST_HERO_BANS = self.FIRST_HERO_BANS + [self.FIRST_PICK + 6]
             self.LAST_PICK = self.SECOND_HERO_PICKS[-1]
         # for 4 Team members #todo implement
-        elif self.num_team_members == 4:
+        elif self.team_size == 4:
             pass
         # for 3 Team members
-        elif self.num_team_members == 3:
+        elif self.team_size == 3:
             self.FIRST_HERO_PICKS = [self.FIRST_PICK, self.FIRST_PICK + 5, self.FIRST_PICK + 6]
             self.SECOND_HERO_PICKS = [self.FIRST_PICK + 1, self.FIRST_PICK + 2, self.FIRST_PICK + 7]
             self.SECOND_HERO_BANS = self.SECOND_HERO_BANS + [self.FIRST_PICK + 3]
             self.FIRST_HERO_BANS = self.FIRST_HERO_BANS + [self.FIRST_PICK + 4]
             self.LAST_PICK = self.SECOND_HERO_PICKS[-1]
         # for 2 Team members #todo implement
-        elif self.num_team_members == 2:
+        elif self.team_size == 2:
             pass
         # for 1 Team member
-        elif self.num_team_members == 1:
+        elif self.team_size == 1:
             self.FIRST_HERO_PICKS = self.FIRST_PICK
             self.SECOND_HERO_PICKS = self.LAST_PICK = self.FIRST_PICK + 1
 

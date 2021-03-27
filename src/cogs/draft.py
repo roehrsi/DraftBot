@@ -79,8 +79,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
             await ctx.send(self.greeting(ctx), delete_after=20)
 
     @draft.command(aliases=["t"])
-    async def tournament(self, ctx, member: discord.Member):
-        draft = Draft()
+    async def tournament(self, ctx, member: discord.Member, draft: Draft = Draft()):
         if randint(0, 1):
             draft.team_first = Team(captain=ctx.author)
             draft.team_second = Team(captain=member)
@@ -93,8 +92,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
         self.pending_drafts.update({ctx.author.id: draft, member.id: draft})
 
     @draft.command(aliases=["q"])
-    async def quick(self, ctx, arg, member: discord.Member):
-        draft = Draft()
+    async def quick(self, ctx, arg, member: discord.Member, draft: Draft = Draft()):
         kind = "map"
         match = isin(kind, arg)
         if match:
@@ -114,6 +112,15 @@ class DraftCog(commands.Cog, name="DraftCog"):
         else:
             await ctx.send(dicts.NO_MATCH.format(kind), delete_after=DELAY)
 
+    @draft.command(aliases=["c"])
+    async def custom(self, ctx, member: discord.Member, team_size: int = 5, map_bans: int = 2, hero_bans: int = 3,
+                     map_pick=None):
+        draft: Draft = Draft(team_size=team_size, map_bans=map_bans)
+        if map_pick:
+            await self.quick(ctx, map_pick, member, draft=draft)
+        else:
+            await self.tournament(ctx, member, draft=draft)
+
     @commands.command()
     async def ban(self, ctx, arg):
         await ctx.message.delete()
@@ -124,7 +131,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
             if draft.phase() == BAN \
                     and ((ctx.author.id == draft.team_first.captain.id and draft.turn() == 0) or (
                     ctx.author.id == draft.team_second.captain.id and draft.turn() == 1)):
-                kind = "map" if draft.stage_num <= 4 else "hero"
+                kind = "map" if draft.stage() in [FIRST_MAP_BANS, SECOND_MAP_BANS, MAP_PICK] else "hero"
                 # notice bans are always single arguments.
                 bans = isin(kind, arg)
                 if not bans:
@@ -155,7 +162,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
             if draft.phase() == PICK \
                     and ((ctx.author.id == draft.team_first.captain.id and draft.turn() == 0) or (
                     ctx.author.id == draft.team_second.captain.id and draft.turn() == 1)):
-                kind = "map" if draft.stage_num <= 4 else "hero"
+                kind = "map" if draft.stage() in [FIRST_MAP_BANS, SECOND_MAP_BANS, MAP_PICK] else "hero"
                 picks = isin(kind, arg1, arg2)
                 if not picks:
                     await ctx.send(dicts.NO_MATCH.format(kind), delete_after=DELAY)
