@@ -15,6 +15,9 @@ SECOND_HERO_PICKS = 7
 LAST_PICK = 8
 FIN = 9
 
+BAN = 20
+PICK = 21
+
 
 class Team:
     """The team data is stored here.
@@ -37,7 +40,7 @@ class Team:
         s = ("Map Bans: \n"
              "``` " + ", ".join(self.map_bans) + "```" +
              "**Map Pick**: \n"
-             "``` " + self.map_pick + "```" +
+             "``` " + "\n " + self.map_pick + "```" +
              "**Hero Bans**: \n"
              "``` " + "\n ".join(self.hero_bans) + "```" +
              "**Hero Picks**: \n" +
@@ -104,33 +107,41 @@ class Draft:
         if team_second is None:
             self.team_second = Team(None, [], "", [], [])
 
-    def stage(self) -> int:
+    def stage(self, stage_num=None) -> int:
         """This will return the stage that is currently happening.
         :returns: the Stage constant corresponding to the current draft stage"""
-        if self.stage_num in self.FIRST_HERO_PICKS:
-            return FIRST_PICK if self.stage_num == self.FIRST_PICK else FIRST_HERO_PICKS
-        elif self.stage_num in self.SECOND_HERO_PICKS:
-            return LAST_PICK if self.stage_num == self.LAST_PICK else SECOND_HERO_PICKS
-        elif self.stage_num in self.FIRST_HERO_BANS:
+        num = stage_num if stage_num else self.stage_num
+
+        if num in self.FIRST_HERO_PICKS:
+            return FIRST_PICK if num == self.FIRST_PICK else FIRST_HERO_PICKS
+        elif num in self.SECOND_HERO_PICKS:
+            return LAST_PICK if num == self.LAST_PICK else SECOND_HERO_PICKS
+        elif num in self.FIRST_HERO_BANS:
             return FIRST_HERO_BANS
-        elif self.stage_num in self.SECOND_HERO_BANS:
+        elif num in self.SECOND_HERO_BANS:
             return SECOND_HERO_BANS
-        elif self.stage_num == self.MAP_PICK:
+        elif num == self.MAP_PICK:
             return MAP_PICK
-        elif self.stage_num in self.FIRST_MAP_BANS:
+        elif num in self.FIRST_MAP_BANS:
             return FIRST_MAP_BANS
-        elif self.stage_num in self.SECOND_MAP_BANS:
+        elif num in self.SECOND_MAP_BANS:
             return SECOND_MAP_BANS
         else:
             return FIN
 
-    def turn(self) -> int:
+    def turn(self, stage_num=None) -> int:
         """Return which teams turn it is.
         :returns: 0 for first team; 1 for second team"""
-        if self.stage() in [FIRST_MAP_BANS, FIRST_HERO_BANS, FIRST_HERO_PICKS, FIRST_PICK]:
+        if self.stage(stage_num) in [FIRST_MAP_BANS, FIRST_HERO_BANS, FIRST_HERO_PICKS, FIRST_PICK]:
             return 0
-        elif self.stage() in [SECOND_MAP_BANS, SECOND_HERO_BANS, SECOND_HERO_PICKS, MAP_PICK, LAST_PICK]:
+        elif self.stage(stage_num) in [SECOND_MAP_BANS, SECOND_HERO_BANS, SECOND_HERO_PICKS, MAP_PICK, LAST_PICK]:
             return 1
+
+    def phase(self) -> int:
+        if self.stage() in [FIRST_MAP_BANS, SECOND_MAP_BANS, FIRST_HERO_BANS, SECOND_HERO_BANS]:
+            return BAN
+        else:
+            return PICK
 
     def lock(self, picks: List[str]) -> None:
         """lock in the pick or ban into the current draft
