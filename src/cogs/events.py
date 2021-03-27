@@ -1,6 +1,7 @@
+import discord
 from discord.ext import commands
 
-from src import dicts
+from src import dicts, data
 
 
 class Events(commands.Cog):
@@ -13,10 +14,19 @@ class Events(commands.Cog):
         print('------')
 
     @commands.Cog.listener()
-    async def on_reaction_add(self, reaction, user):
-        if (reaction.emoji == "❌") and (user.id != self.bot.user.id):
-            await reaction.message.delete()
-            await reaction.message.channel.send(dicts.DRAFT_RESET, delete_after=5)
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
+        # catch bot reaction
+        channel: discord.TextChannel = self.bot.get_channel(payload.channel_id)
+        message: discord.Message = await channel.fetch_message(payload.message_id)
+        print(str(payload.emoji) == '❌', payload.user_id != self.bot.user.id)
+        if (str(payload.emoji) == '❌') and (payload.user_id != self.bot.user.id):
+            embed: discord.Embed = message.embeds[0]
+            # check finished draft
+            if embed and embed.fields[-1].value != data.FIN:
+                await message.delete()
+                await message.channel.send(dicts.DRAFT_RESET, delete_after=5)
+        else:
+            await message.remove_reaction(payload.emoji, payload.member)
 
 
 def setup(bot):
