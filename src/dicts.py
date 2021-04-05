@@ -21,24 +21,26 @@ help_embed = {
     "fields": [
         {"name": "!draft",
          "value": "To start a draft, the **!draft** command will begin a fresh draft for you. "
-                  "Use either the **!draft tournament [@Opponent]** command if you want to start with "
+                  "Use either the **!draft tournament [@Opponent]** sub-command if you want to start with "
                   "flipping a coin for the first pick and drafting a map, "
                   "or **!draft quick [map] [@Opponent]** if you want to pick a map directly "
                   "and move on to the hero draft. "
                   "Only you and your tagged opponent can influence the draft, "
                   "so you are safe from griefers and run-downers ;). "
-                  "Nobody can stop you from tagging yourself though...",
+                  "Nobody can stop you from tagging yourself though...\n\n"
+                  "The **!draft custom** command will allow you to start a non-standard draft "
+                  "with custom values for map bans and team size.",
          "inline": False},
         {"name": "!ban",
          "value": "The **!ban** command is your one stop shop for banning maps and heroes. "
-                  "It takes one argument - the map or hero name - and adds that to the draft."
-                  "DraftBot can handle some spelling error and shorthands, "
-                  "but try not to be too obscure with your inputs",
+                  "It takes one argument - the map or hero name - and adds that to the ban list."
+                  "DraftBot can handle some spelling errors and shorthands, "
+                  "but try not to be too obscure with your inputs.",
          "inline": False},
         {"name": "!pick",
          "value": "The **!pick** command works just like **!ban** for map and hero picks."
                   "For the double pick phases, the **!pick** command also takes two "
-                  "arguments.",
+                  "arguments, in case you want to double pick.",
          "inline": False},
         {"name": "!draft help",
          "value": "Use the **!draft help** command to display this information.",
@@ -50,7 +52,8 @@ help_embed = {
                   "Hero Bans: **A B A B**\n"
                   "Hero Picks: **A BB AA**\n"
                   "Hero Bans: **B A**\n"
-                  "Hero Picks: **BB AA B**",
+                  "Hero Picks: **BB AA B**\n\n"
+                  "Remember that this is obviously different in custom draft configurations.",
          "inline": False},
 
     ],
