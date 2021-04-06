@@ -85,7 +85,12 @@ class Draft:
             self.LAST_PICK = self.SECOND_HERO_PICKS[-1]
         # for 4 Team members #todo implement
         elif self.team_size == 4:
-            pass
+            self.FIRST_HERO_PICKS = [self.FIRST_PICK, self.FIRST_PICK + 4, self.FIRST_PICK + 5, self.FIRST_PICK + 8]
+            self.SECOND_HERO_PICKS = [self.FIRST_PICK + 1, self.FIRST_PICK + 6, self.FIRST_PICK + 7,
+                                      self.FIRST_PICK + 9]
+            self.SECOND_HERO_BANS = self.SECOND_HERO_BANS + [self.FIRST_PICK + 2]
+            self.FIRST_HERO_BANS = self.FIRST_HERO_BANS + [self.FIRST_PICK + 3]
+            self.LAST_PICK = self.SECOND_HERO_PICKS[-1]
         # for 3 Team members
         elif self.team_size == 3:
             self.FIRST_HERO_PICKS = [self.FIRST_PICK, self.FIRST_PICK + 5, self.FIRST_PICK + 6]
@@ -95,7 +100,9 @@ class Draft:
             self.LAST_PICK = self.SECOND_HERO_PICKS[-1]
         # for 2 Team members #todo implement
         elif self.team_size == 2:
-            pass
+            self.FIRST_HERO_PICKS = [self.FIRST_PICK, self.FIRST_PICK + 2]
+            self.SECOND_HERO_PICKS = [self.FIRST_PICK + 1, self.FIRST_PICK + 3]
+            # no additional bans for size 2. drafting gets funky for even numbers
         # for 1 Team member
         elif self.team_size == 1:
             self.FIRST_HERO_PICKS = self.FIRST_PICK
