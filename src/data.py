@@ -38,7 +38,7 @@ class Team:
 
     def __repr__(self):
         s = ("Map Bans: \n"
-             "``` " + ", ".join(self.map_bans) + "```" +
+             "``` " + "\n ".join(self.map_bans) + "```" +
              "**Map Pick**: \n"
              "``` " + "\n " + self.map_pick + "```" +
              "**Hero Bans**: \n"

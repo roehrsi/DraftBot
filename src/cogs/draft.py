@@ -104,11 +104,6 @@ class DraftCog(commands.Cog, name="DraftCog"):
             draft.draft_message = message
             await message.add_reaction(DELETE_DRAFT_EMOJI)
             self.pending_drafts.update({ctx.author.id: draft, member.id: draft})
-            """await ctx.send(
-                f"{draft.team_second.captain.display_name} picked **{draft.team_second.map_pick}**!\n "
-                f"Please start banning two heroes each by writing ``!ban [hero]``. "
-                f"{draft.team_first.captain.display_name} goes first!",
-                delete_after=DELAY)"""
         else:
             await ctx.send(dicts.NO_MATCH.format(kind), delete_after=DELAY)
 
@@ -179,6 +174,7 @@ class DraftCog(commands.Cog, name="DraftCog"):
                         await ctx.send(dicts.REDUNDANT_PICK.format(kind), delete_after=DELAY)
                     else:
                         print("turn: ", draft.turn(), draft.turn(draft.stage_num + 1))
+                        # needs two turns for cho, gall pick
                         if (picks == ["Cho", "Gall"]) and (draft.turn() != draft.turn(draft.stage_num + 1)):
                             await ctx.send("Must pick Cho'Gall during double pick phases :(", delete_after=DELAY)
                         else:

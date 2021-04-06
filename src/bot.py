@@ -9,7 +9,6 @@ from discord.ext import commands
 token = os.environ.get("DTOKEN", "NO TOKEN")
 
 logging.basicConfig(level=logging.INFO)
-description = "This is a simple Bot to simulate drafting."
 intents = discord.Intents.default()
 
 with open("config.json", "r") as file:
